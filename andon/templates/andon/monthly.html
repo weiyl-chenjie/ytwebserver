@@ -1,0 +1,196 @@
+{% extends 'andon/base.html' %}
+{% load static %}
+{% block content %}
+    <h1>
+        <span style="color: #50DD09;">{{ menu_obj }}</span>
+        {{ this_month|date:'Y年m月' }}生产看板：
+        <a href="{% url 'andon:monthly' menu_obj.id prev_month %}"  class="btn btn-outline-info">上个月</a>
+        <a href="{% url 'andon:monthly' menu_obj.id next_month %}"  class="btn btn-outline-info">下个月</a>
+    </h1>
+    <div class="container">
+        <div class="row">
+            <div>
+                <div id="main" style="width: 660px;height:550px;"></div>
+            </div>
+            <div style="margin-top: 100px;">
+                <svg class="icon" aria-hidden="true" style="font-size: x-large">
+                    <use xlink:href="#icon-riqi-"></use>
+                </svg>
+                <label for="datepicker" style="font-family: 华文行楷;font-size: x-large">选择月份：</label>
+                <div class="form-inline">
+                    <input type="text" id="datepicker" class="form-control" placeholder="输入格式:2019-09">
+                    <button type="button" class="btn btn-primary" id="button_month">确定</button>
+                </div>
+                <span id="datepicker_error" class="text-danger"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        $('#datepicker').datepicker({
+            language: "zh-CN",          //选择语言
+            calendarWeeks: true,        //显示周数
+            autoclose: true,            //选择完日期后自动关闭
+            todayHighlight: true,       //今日高亮显示
+            weekStart: 0,               //周日为一周的第一天
+            minViewMode: 1,             //最小视图单位：1/month
+            format: "yyyy-mm",          //日期格式
+            clearBtn: true,             //显示清除按钮
+            orientation: "bottom auto" //控件位置：底部自动
+        });
+        $('#button_month').click(function () {
+            let patter_date = /^\d{4}-\d{2}$/
+            let date = $('#datepicker').val();
+            console.log(date)
+            let result = patter_date.test(date)
+            if(result){
+                window.location.href =  "/andon/monthly/" + {{ menu_obj.id }} +'/' + date;
+            }
+            else{
+                $("#datepicker_error").text('日期格式错误');
+            }
+        })
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        var dateList = {{ date_list|safe }};
+        var heatmapData = [];
+        var lunarData = [];
+        //console.log(dateList)
+        for (var i = 0; i < dateList.length; i++) {
+            //元素长度为2，表示没有停线，数据格式为["2019-08-01", "无生产"]或["2019-08-01", "有生产"]。取生产记录
+            //元素长度为3，表示有停线，数据格式为["2019-08-01", "有生产"，"有停线"]或["2019-08-01", "无生产"，"有停线"]。取停线记录
+            if (dateList[i].length == 2){
+                heatmapData.push([
+                    dateList[i][0],
+                    {{ menu_obj.id }},
+                    dateList[i][1]  //取生产记录
+                ])
+            }else {
+                heatmapData.push([
+                    dateList[i][0],
+                    {{ menu_obj.id }},
+                    dateList[i][2]  //取停线记录
+                ])
+            }
+            ;
+            lunarData.push([
+                dateList[i][0],
+                1,
+                dateList[i][1],
+                dateList[i][2]
+            ]);
+        }
+        //console.log(heatmapData)
+
+        option = {
+            tooltip: {
+                formatter: function (params) {
+                    return '点击查看当日详情';
+                }
+            },
+
+            visualMap: {
+                show: true,
+                left: null,
+                right: 0,
+                categories:['无生产', '有生产','有停线'],
+
+                seriesIndex: [2],
+                bottom: 80,
+                inRange: {
+                    color: ['rgba(0,0,0,0.30)', '#50dd09', '#d92525'],
+                    opacity: 1
+                }
+            },
+
+            calendar: [{
+                left: 'center',
+                top: 'middle',
+                cellSize: [70, 70],
+                yearLabel: {
+                    position: 'right',
+                    color:'#151cdd',
+                    show: true,
+                },
+                orient: 'vertical',
+                dayLabel: {
+                    firstDay: 0,
+                    nameMap: 'cn',
+                    color: "#000000"
+                },
+                monthLabel: {
+                    show: true,
+                    nameMap: 'cn',
+                    color: '#151cdd',
+                    fontSize: 14
+                },
+                range: {{ calendar_range|safe }}
+            }],
+
+            series: [{
+                type: 'scatter',
+                coordinateSystem: 'calendar',
+                symbolSize: 1,
+                label: {
+                    normal: {
+                        show: true,
+                        color: '#fff',
+                        formatter: function (params) {
+                            var d = echarts.number.parseDate(params.value[0]);
+                            if (params.value[2] == '有生产'){
+                                return '{a|   ' + d.getDate() + '\n\n' + params.value[2] + '\n\n' + '}';
+                            }
+                            return '{b|   ' + d.getDate() + '\n\n' + params.value[2] + '\n\n' + '}';
+                        },
+                        rich:{
+                            a:{
+                                color:"blue"
+                            },
+                            b:{
+                                color:'black'
+                            }
+                        }
+                    }
+                },
+                data: lunarData
+            }, {
+                type: 'scatter',
+                coordinateSystem: 'calendar',
+                symbolSize: 1,
+                label: {
+                    normal: {
+                        show: true,
+                        formatter: function (params) {
+                            return '\n\n\n' + (params.value[3] || '');
+                        },
+                        textStyle: {
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: '#a00'
+                        }
+                    }
+                },
+                data: lunarData
+            }, {
+                name: '生产信息',
+                type: 'heatmap',
+                coordinateSystem: 'calendar',
+                data: heatmapData
+            }]
+        };
+        myChart.setOption(option);
+        myChart.on('click', function (params) {
+            // 控制台打印数据的名
+            var date = params.value[0];
+
+            //console.log(date)
+            //console.log(params.value[1])
+            //console.log({{ menu_obj.id }})
+            window.location.href = "/andon/detail/daily/" + {{ menu_obj.id }} +'/' + date;
+            {#//window.location.href = "{% url 'andon:detail' %}?menu=" + {{ menu_obj.id }} + "&date=" + date;#}
+        });
+    </script>
+{% endblock %}

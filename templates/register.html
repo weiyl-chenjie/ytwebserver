@@ -1,0 +1,40 @@
+{% extends 'blogs/base.html' %}
+{% load static %}
+{% block title %}
+    我的网站|注册
+{% endblock %}
+{% block header_style %}
+    <link rel="stylesheet" href="{% static 'iconfont/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-4 offset-4">
+                <div class="card">
+                    <div class="card-header">
+                        注册
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            {% for field in reg_form %}
+                                <label for="{{ field.id_for_label }}"><strong>{{ field.label }}</strong></label>
+                                {{ field }}
+                                <p class="text-danger">{{ field.errors.as_text }}</p>
+                            {% endfor %}
+                            <span class="text-danger">{{ reg_form.non_field_errors }}</span>
+                            <style type="text/css">
+                                ul.errorlist.nonfield{
+                                    list-style: none;
+                                }
+                            </style>
+                            <input type="submit" value="注册" class="btn btn-primary" style="float: right">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

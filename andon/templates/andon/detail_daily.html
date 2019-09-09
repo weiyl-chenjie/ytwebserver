@@ -1,0 +1,311 @@
+{% extends 'andon/base.html' %}
+{% load static %}
+{% block content %}
+    <h1>
+        {% if not mps_empty %}
+            <span class="btn-outline-success">{{ menu_obj.project }}{{ menu_obj.production_line }}{{ menu_obj.product }}</span> 今日生产计划:
+        {% else %}
+            <span style="color: #50DD09">{{ menu_obj.project }}{{ menu_obj.production_line }}{{ menu_obj.product }}</span>
+            {{ date|date:'Y-m-d' }}<span style="color: #FF0000">无</span>生产计划
+        {% endif %}
+            &emsp;
+            <a href="{% url 'andon:detail_daily' menu_obj.id prev_day|date:'Y-m-d' %}" class="btn btn-outline-info">前一天</a>
+            <a href="{% url 'andon:detail_daily' menu_obj.id prev_day|date:'Y-m-d' %}" class="btn btn-outline-info">后一天</a>
+            <a href="{% url 'andon:monthly' menu_obj.id date|date:'Y-m' %}" class="btn btn-outline-info">按月查看</a>
+            {% if line_stop_objects.exists %}
+                <button id="btn-line-stop" class="btn btn-outline-danger" onclick="show_line_stop_table(this)">点击显示停线记录</button>
+            {% endif %}
+        </h1>
+    <div class="container float-left">
+        <div class="row">
+            <table class="table table-bordered table-hover table-striped table-success text-center table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">项目</th>
+                        <th scope="col">开始时间</th>
+                        <th scope="col">结束时间</th>
+                        <th scope="col">计划产量</th>
+                        <th scope="col">生产人数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mps_object in mps_objects %}
+                        <tr>
+                            <th id="{{ mps_object.id }}" scope="row" onclick="show_echart(this)">{{ mps_object.menu_info }}(ID:{{ mps_object.id }})</th>
+                            <td>{{ mps_object.start_time }}</td>
+                            <td>{{ mps_object.end_time }}</td>
+                            <td>{{ mps_object.plan_outputs }}</td>
+                            <td>{{ mps_object.workers }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <table id="line_stop_table" class="table table-bordered table-hover table-striped text-center" style="display: none;" >
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">停线项目</th>
+                        <th scope="col">维护人员</th>
+                        <th scope="col">停线原因</th>
+                        <th scope="col">解决方案</th>
+                        <th scope="col">停线状态</th>
+                        <th scope="col">开始时间</th>
+                        <th scope="col">结束时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for line_stop_object in line_stop_objects %}
+                        <tr id="{{ line_stop_object.id }}" class="table-success text-center">
+                            <th>{{ line_stop_object.menu_info }}</th>
+                            <td>{{ line_stop_object.maintainer }}</td>
+                            <td>{{ line_stop_object.reason|safe }}</td>
+                            <td>{{ line_stop_object.solution|safe }}</td>
+                            <td>
+                                {% if line_stop_object.line_stopping %}
+                                    停线中
+                                    <script>
+                                        $('#{{ line_stop_object.id }}').addClass('table-danger')
+                                    </script>
+                                {% else %}
+                                    已修复
+                                    <script>
+                                        $('#{{ line_stop_object.id }}').addClass('table-warning')
+                                    </script>
+                                {% endif %}
+                            </td>
+                            <td>{{ line_stop_object.start_time }}</td>
+                            <td>{{ line_stop_object.end_time }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% for mps_object in mps_objects %}
+        <div class="{{ mps_object.id }} container float-left" style="display: none;">
+            <div class="row" id="main{{ mps_object.id }}" style="width: 1000px;height:300px;" ></div>
+        </div>
+    {% endfor %}
+
+    <script>
+        let echart_drawed = []; // 判断该元素的echarts图表是否已经画好。
+        function show_echart(element) {
+            $('.' + element.id).fadeToggle();
+            if(echart_drawed.includes(element.id)){
+
+            }
+            else{
+                echart_drawed.push(element.id);
+                $.ajax({
+                    url: "{% url 'andon:get_echarts_data' %}",
+                    type: "POST",
+                    //data: $(this).serialize(),
+                    data: {
+                        mps_id: element.id
+                    },
+                    cache: false,
+                    success: function (data) {
+                        if(data['status']=="SUCCESS"){
+                            // 获取相关数据，在echarts中使用
+                            let echarts_data = data['echarts_data']
+                            let x_axis = echarts_data.x_axis
+                            let series_actual_data = echarts_data.series_actual_data
+                            let series_plan_data = echarts_data.series_plan_data
+                            let markLine_data = echarts_data.mark_line_data
+                            let project_info = echarts_data.project_info
+                            console.log(project_info)
+                            // 基于准备好的dom，初始化echarts实例
+                            var myChart = echarts.init(document.getElementById('main'+ element.id));
+                            // 指定图表的配置项和数据
+                            var option = {
+                                tooltip : {
+                                        trigger: 'axis',
+                                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                        }
+                                    },
+                                legend: {
+                                    x:'100px',
+                                    y:'30px',
+                                    data:['实际产量', '计划产量']
+                                },
+                                grid: {
+                                    left: '3%',
+                                    right: '4%',
+                                    bottom: '3%',
+                                    containLabel: true
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    data: x_axis,
+                                    axisTick: {
+                                        alignWithLabel: true
+                                    }
+                                },
+                                yAxis : [
+                                    {
+                                        type : 'value'
+                                    }
+                                ],
+                                series : [
+                                    {
+                                        name: '实际产量',
+                                        type: 'bar',
+                                        data: series_actual_data,
+                                        markLine : {
+                                            symbol: 'none',
+                                            label:{
+                                                show: true,
+                                                position: 'middle',
+                                                formatter: '{b}'
+                                            },
+                                            lineStyle: {
+                                                width: 3,
+                                                color: '#aa2024',
+                                                type: 'solid'
+                                            },
+                                            data: [
+                                                {
+                                                    name: project_info + '(ID:' + element.id + '):' + '\n计划总产量' + markLine_data,
+                                                    yAxis: markLine_data
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        name: '计划产量',
+                                        type: 'bar',
+                                        data: series_plan_data,
+                                        barGap: '0%',
+                                    },
+                                ]
+                            };
+                            // 使用刚指定的配置项和数据显示图表。
+                            myChart.setOption(option);
+                        }else{
+                            //  显示错误信息
+
+                        }
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                    }
+                });
+            }
+            console.log(echart_drawed)
+        }
+        function show_line_stop_table(element) {
+            $('#line_stop_table').fadeToggle();
+            if(element.innerText == '点击显示停线记录')
+                element.innerText='点击隐藏停线记录';
+            else
+                element.innerText='点击显示停线记录'
+        }
+    </script>
+
+    <!-- 该script作用是：当点击前端按钮时，画echarts图表，并显示或隐藏。每次点击都重画一次echarts
+{#    <script>#}
+{#        function draw_echarts(element){#}
+{#            let echarts_elements = {{ echarts_elements|safe }}#}
+{#            //console.log(element.id);#}
+{#            //console.log(echarts_elements);#}
+{#            $("." + element.id).fadeToggle()#}
+{#            // 获取相关数据，在echarts中使用#}
+{#            let x_axis = echarts_elements[element.id].x_axis#}
+{#            let series_actual_data = echarts_elements[element.id].series_actual_data#}
+{#            let series_plan_data = echarts_elements[element.id].series_plan_data#}
+{#            let markLine_data = echarts_elements[element.id].mark_line_data#}
+{#            // 基于准备好的dom，初始化echarts实例#}
+{#            var myChart = echarts.init(document.getElementById('main'+element.id));#}
+{#            // 指定图表的配置项和数据#}
+{#            var option = {#}
+{#                tooltip : {#}
+{#                        trigger: 'axis',#}
+{#                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效#}
+{#                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'#}
+{#                        }#}
+{#                    },#}
+{#                legend: {#}
+{#                    x:'100px',#}
+{#                    y:'30px',#}
+{#                    data:['实际产量', '计划产量']#}
+{#                },#}
+{#                grid: {#}
+{#                    left: '3%',#}
+{#                    right: '4%',#}
+{#                    bottom: '3%',#}
+{#                    containLabel: true#}
+{#                },#}
+{#                xAxis: {#}
+{#                    type: 'category',#}
+{#                    data: x_axis,#}
+{#                    axisTick: {#}
+{#                        alignWithLabel: true#}
+{#                    }#}
+{#                },#}
+{#                yAxis : [#}
+{#                    {#}
+{#                        type : 'value'#}
+{#                    }#}
+{#                ],#}
+{#                series : [#}
+{#                    {#}
+{#                        name: '实际产量',#}
+{#                        type: 'bar',#}
+{#                        data: series_actual_data,#}
+{#                        markLine : {#}
+{#                            symbol: 'none',#}
+{#                            label:{#}
+{#                                show: true,#}
+{#                                position: 'middle',#}
+{#                                formatter: '{b}'#}
+{#                            },#}
+{#                            lineStyle: {#}
+{#                                width: 3,#}
+{#                                color: '#aa2024',#}
+{#                                type: 'solid'#}
+{#                            },#}
+{#                            data: [#}
+{#                                {#}
+{#                                    name: '计划总产量(ID:' + element.id + ")",#}
+{#                                    yAxis: markLine_data#}
+{#                                }#}
+{#                            ]#}
+{#                        }#}
+{#                    },#}
+{#                    {#}
+{#                        name: '计划产量',#}
+{#                        type: 'bar',#}
+{#                        data: series_plan_data,#}
+{#                        barGap: '0%',#}
+{#                    },#}
+{#                ]#}
+{#            };#}
+{##}
+{#            // 使用刚指定的配置项和数据显示图表。#}
+{#            myChart.setOption(option);#}
+{#        }#}
+{#        function previous_day() {#}
+{#            let menu_id = {{ menu_obj.id }};#}
+{#            let prev_day = {{ prev_day|safe }};#}
+{#            window.location.href = "{% url 'andon:detail' %}?menu=" + menu_id + "&date=" + prev_day;#}
+{#        }#}
+{#        function next_day() {#}
+{#            let menu_id = {{ menu_obj.id }};#}
+{#            let next_day = {{ next_day|safe }};#}
+{#            window.location.href = "{% url 'andon:detail' %}?menu=" + menu_id + "&date=" + next_day;#}
+{#        }#}
+{#        function monthly() {#}
+{#            let menu_id = {{ menu_obj.id }};#}
+{#            let month = {{ month|safe }};#}
+{#            window.location.href = "{% url 'andon:monthly' %}?menu=" + menu_id + "&month=" + month;#}
+{#            console.log("按月查询")#}
+{#        }#}
+{#    </script>#}
+    -->
+{% endblock %}
+
+
+

@@ -1,0 +1,70 @@
+{% extends 'andon/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container float-left" style="margin-top: 35px;">
+        <ul class="btn-group-justified">
+            <a href="#" class="btn btn-success">今日计划生产的项目</a>
+            <a href="#" class="btn btn-outline-dark">今日无生产计划的项目</a>
+            <a href="#" class="btn btn-danger">正在停线的项目</a>
+        </ul>
+    </div>
+    <div class="container float-left" style="margin-top: 35px;">
+        <div class="row">
+            <div class="col-12 col-sm-8 col-md-9 col-lg-10">
+                {% for project in projects_all %}<!--遍历所有的客户（客户无重复）-->
+                    <btn class="btn btn-info disabled">{{ project }}</btn><br>
+                    {% for product in products_all %}<!--遍历所有的产品，按客户分组（产品无重复，但多个产品可能会对应一个客户）-->
+                        {% if product.project == project %}<!--如果产品对应的客户等于当前客户-->
+                            {% if product.id in projects_stopping %}<!--如果当前产品此时正在停线，对应项目变红-->
+                                <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-danger">{{ product }}</a>
+                            {% else %}
+                                {% if product.id in projects_today %}<!--如果当前产品今日有生产计划,对应项目变绿-->
+                                    <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-success">{{ product }}</a>
+                                {% else %}
+                                    <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-outline-dark">{{ product }}</a>
+                                {% endif %}
+                            {% endif %}
+
+                        {% endif %}
+                    {% endfor %}
+                    <br><br>
+                {% endfor %}
+            </div>
+            <div class="hidden col-sm-4 col-md-3 col-lg-2">
+                <div class="card">
+                    <div class="card-header">
+                        按流水线归档
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            {% for record in records_group_by_production_line %}
+                                <li style="list-style-type: none">
+                                    <a href="{% url 'andon:group_by_production_line' record.project record.production_line mps_or_line_stop %}">
+                                        {{ record.project }}{{ record.production_line}}({{ record.record_counts }})
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        按日期归档
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            {% for record in records_group_by_dates %}
+                                <li style="list-style-type: none">
+                                    <a href="{% url 'andon:group_by_date' record.start_time__year record.start_time__month mps_or_line_stop %}">
+                                        {{ record.start_time__year }}年{{ record.start_time__month }}月({{ record.record_counts }})
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

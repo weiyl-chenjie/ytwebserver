@@ -1,0 +1,5 @@
+settings.py
+media/
+static/
+.idea/
+__pycache__/
