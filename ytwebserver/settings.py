@@ -29,7 +29,6 @@ if platform.system() == 'Windows':  # 测试环境
     DEBUG = True
 elif platform.system() == 'Linux':  # 生产环境
     DEBUG = False
-
 ALLOWED_HOSTS = ['*']
 
 
@@ -217,36 +216,40 @@ EMAIL_SUBJECT_PREFIX = ['ytwebserver_error']
 # [('John', 'john@example.com'), ('Mary', 'mary@example.com')]
 ADMINS = [('尉玉林', os.environ['EMAIL_HOST_USER'])]
 # 日志文件
-LOGGING = {
-    'version': 1,  # 日志版本，可以自己定义
-    'disable_existing_loggers': False,  # 是否禁用已经存在的（Django自己的）日志文件记录器
-    'handlers': {  # 定义
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            # 日志文件要记录到什么地方，建议不要放在项目里，日志文件会自动增长，不便于Github操作
-            # 另外要注意，要修改文件的读写权限为所有人可读写，chmod 666 ytwebserver_debug.log
-            'filename': '/home/ytadmin/program/ytwebserver_debug.log',
+# https://docs.djangoproject.com/en/2.2/topics/logging/
+if platform.system() == 'Windows':
+    pass
+elif platform.system() == 'Linux':
+    LOGGING = {
+        'version': 1,  # 日志版本，可以自己定义
+        'disable_existing_loggers': False,  # 是否禁用已经存在的（Django自己的）日志文件记录器
+        'handlers': {  # 定义
+            'file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                # 日志文件要记录到什么地方，建议不要放在项目里，日志文件会自动增长，不便于Github操作
+                # 另外要注意，要修改文件的读写权限为所有人可读写，chmod 666 ytwebserver_debug.log
+                'filename': '/home/ytadmin/program/ytwebserver_debug.log',
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'class': 'django.utils.log.AdminEmailHandler',
+                # 'filters': ['special']  # 筛选器，这里不需要：只要报错就发送邮件给管理员邮箱
+            }
         },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            # 'filters': ['special']  # 筛选器，这里不需要：只要报错就发送邮件给管理员邮箱
-        }
-    },
-    'loggers': {  # 记录器
-        'django': {
-            'handlers': ['file'],  # 记录哪个文件，这里选择的是上面定义的'file'
-            'level': 'DEBUG',  # 记录级别，>= DEBUG  级别定义：debug<info<warning<error<critical
-            'propagate': True,  # 错误是否向上一级别传递
+        'loggers': {  # 记录器
+            'django': {
+                'handlers': ['file'],  # 记录哪个文件，这里选择的是上面定义的'file'
+                'level': 'DEBUG',  # 记录级别，>= DEBUG  级别定义：debug<info<warning<error<critical
+                'propagate': True,  # 错误是否向上一级别传递
+            },
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
         },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-    },
-}
+    }
 
 
 # 全局变量
