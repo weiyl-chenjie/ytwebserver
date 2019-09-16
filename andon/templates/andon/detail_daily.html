@@ -137,6 +137,18 @@
                                     bottom: '3%',
                                     containLabel: true
                                 },
+                                toolbox: {
+                                    x:'800px',
+                                    y:'30px',
+                                    feature: {
+                                        dataZoom: {
+                                            yAxisIndex: 'none'
+                                        },
+                                        magicType: {type: ['line', 'bar']},
+                                        restore: {},
+                                        saveAsImage: {}
+                                    }
+                                },
                                 xAxis: {
                                     type: 'category',
                                     data: x_axis,
