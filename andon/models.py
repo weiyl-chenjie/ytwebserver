@@ -96,8 +96,8 @@ class LineStop(models.Model):  # 停线记录
     maintainer = models.ForeignKey(Maintainers, on_delete=models.DO_NOTHING, verbose_name="维护人员")
     reason = RichTextUploadingField(verbose_name='停线原因', blank=True, null=True)
     solution = RichTextUploadingField(verbose_name='解决方案', blank=True, null=True)
-    start_time = models.DateTimeField(verbose_name="开始停线", default=timezone.now())
-    end_time = models.DateTimeField(verbose_name="结束停线", default= timezone.now())
+    start_time = models.DateTimeField(verbose_name="开始停线")
+    end_time = models.DateTimeField(verbose_name="结束停线")
     line_stopping = models.BooleanField(verbose_name="停线中", default=False)
 
     def clean(self):
