@@ -97,12 +97,12 @@
                     </div>
             </div>
             <div class="hidden col-sm-4 col-md-3 col-lg-2">
-                <div class="card">
+                <div class="card text-center">
                     <div class="card-header">
                         按流水线归档
                     </div>
-                    <div class="card-body">
-                        <ul>
+                    <div class="card-body" style="padding: 0px">
+                        <ul style="padding: 0px">
                             {% for record in records_group_by_production_line %}
                                 <li style="list-style-type: none">
                                     <a href="{% url 'andon:group_by_production_line' record.project record.production_line mps_or_line_stop%}">
@@ -113,12 +113,12 @@
                         </ul>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card text-center">
                     <div class="card-header">
                         按日期归档
                     </div>
-                    <div class="card-body">
-                        <ul>
+                    <div class="card-body" style="padding: 0px">
+                        <ul style="padding: 0px">
                             {% for record in records_group_by_dates %}
                                 <li style="list-style-type: none">
                                     <a href="{% url 'andon:group_by_date' record.start_time__year record.start_time__month mps_or_line_stop%}">
