@@ -65,7 +65,7 @@ def index(request):
     data_to_paginator = all_records.order_by('-start_time')
     today = datetime.date.today()
     tomorrow = today + datetime.timedelta(days=1)
-    products_all = Menu.objects.filter(is_stop=False).order_by('project', 'production_line')  # Menu中所有未停产的产品([丰田320A高配、丰田320A低配、福特C490高配...]
+    products_all = Menu.objects.order_by('project', 'production_line')  # Menu中所有的产品([丰田320A高配、丰田320A低配、福特C490高配...]
     projects_all = Menu.objects.distinct('project').values_list('project', flat=True)  # 去重后的所有客户([福特、丰田.....]
     # 今天生产的项目
     projects_today = Mps.objects.filter(start_time__range=[today, tomorrow]).values_list('menu_info_id', flat=True)

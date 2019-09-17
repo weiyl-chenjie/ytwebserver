@@ -6,6 +6,7 @@
             <a href="#" class="btn btn-success">今日计划生产的项目</a>
             <a href="#" class="btn btn-outline-dark">今日无生产计划的项目</a>
             <a href="#" class="btn btn-danger">正在停线的项目</a>
+            <a href="#" class="btn btn-warning">已停产的项目</a>
         </ul>
     </div>
     <div class="container float-left" style="margin-top: 35px;">
@@ -15,16 +16,19 @@
                     <btn class="btn btn-info disabled">{{ project }}</btn><br>
                     {% for product in products_all %}<!--遍历所有的产品，按客户分组（产品无重复，但多个产品可能会对应一个客户）-->
                         {% if product.project == project %}<!--如果产品对应的客户等于当前客户-->
-                            {% if product.id in projects_stopping %}<!--如果当前产品此时正在停线，对应项目变红-->
-                                <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-danger">{{ product }}</a>
+                            {% if product.is_stop %}<!--如果项目已停产，则显示灰黑色-->
+                                <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-warning">{{ product }}</a>
                             {% else %}
-                                {% if product.id in projects_today %}<!--如果当前产品今日有生产计划,对应项目变绿-->
-                                    <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-success">{{ product }}</a>
+                                {% if product.id in projects_stopping %}<!--如果当前产品此时正在停线，对应项目变红-->
+                                    <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-danger">{{ product }}</a>
                                 {% else %}
-                                    <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-outline-dark">{{ product }}</a>
+                                    {% if product.id in projects_today %}<!--如果当前产品今日有生产计划,对应项目变绿-->
+                                        <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-success">{{ product }}</a>
+                                    {% else %}
+                                        <a href="{% url 'andon:detail_daily' product.id date %}" class="btn btn-outline-dark">{{ product }}</a>
+                                    {% endif %}
                                 {% endif %}
                             {% endif %}
-
                         {% endif %}
                     {% endfor %}
                     <br><br>
