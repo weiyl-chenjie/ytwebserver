@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import platform
+from . import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
@@ -84,15 +85,13 @@ WSGI_APPLICATION = 'ytwebserver.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-DATABASE_PASSWORD_default = os.environ['DATABASE_PASSWORD_default']
-HOST_default = os.environ['HOST_default']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'MeasuredData',
         'USER': 'MeasuredData',
-        'PASSWORD': DATABASE_PASSWORD_default,
-        'HOST': HOST_default,
+        'PASSWORD': config.DATABASE_PASSWORD_default,
+        'HOST': config.HOST_default,
         'PORT': '5432',
     },
 }
@@ -204,9 +203,9 @@ CACHES = {
 # https://docs.djangoproject.com/en/2.2/ref/settings/#email
 # https://docs.djangoproject.com/en/2.2/topics/email/
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ['EMAIL_HOST']
+EMAIL_HOST = config.EMAIL_HOST
 EMAIL_PORT = 25
-EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_USER = config.EMAIL_HOST_USER
 # EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_SUBJECT_PREFIX = ['ytwebserver_error']
 # EMAIL_USE_SSL = True
@@ -214,7 +213,7 @@ EMAIL_SUBJECT_PREFIX = ['ytwebserver_error']
 
 # Each item in the list should be a tuple of (Full name, email address). Example:
 # [('John', 'john@example.com'), ('Mary', 'mary@example.com')]
-ADMINS = [('尉玉林', os.environ['EMAIL_HOST_USER'])]
+ADMINS = config.ADMINS
 # 日志文件
 # https://docs.djangoproject.com/en/2.2/topics/logging/
 if platform.system() == 'Windows':
