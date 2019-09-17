@@ -10,7 +10,7 @@
         {% endif %}
             &emsp;
             <a href="{% url 'andon:detail_daily' menu_obj.id prev_day|date:'Y-m-d' %}" class="btn btn-outline-info">前一天</a>
-            <a href="{% url 'andon:detail_daily' menu_obj.id prev_day|date:'Y-m-d' %}" class="btn btn-outline-info">后一天</a>
+            <a href="{% url 'andon:detail_daily' menu_obj.id next_day|date:'Y-m-d' %}" class="btn btn-outline-info">后一天</a>
             <a href="{% url 'andon:monthly' menu_obj.id date|date:'Y-m' %}" class="btn btn-outline-info">按月查看</a>
             {% if line_stop_objects.exists %}
                 <button id="btn-line-stop" class="btn btn-outline-danger" onclick="show_line_stop_table(this)">点击显示停线记录</button>
