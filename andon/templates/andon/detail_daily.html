@@ -3,7 +3,7 @@
 {% block content %}
     <h1>
         {% if not mps_empty %}
-            <span class="btn-outline-success">{{ menu_obj.project }}{{ menu_obj.production_line }}{{ menu_obj.product }}</span> 今日生产计划:
+            <span class="btn-outline-success">{{ menu_obj.project }}{{ menu_obj.production_line }}{{ menu_obj.product }}</span> {{ date|date:'Y-m-d' }}生产计划:
         {% else %}
             <span style="color: #50DD09">{{ menu_obj.project }}{{ menu_obj.production_line }}{{ menu_obj.product }}</span>
             {{ date|date:'Y-m-d' }}<span style="color: #FF0000">无</span>生产计划
