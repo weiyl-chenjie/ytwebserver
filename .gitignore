@@ -3,4 +3,3 @@ __pycache__/
 config.py
 static_collected/
 migrations/222.py
-settings.py
