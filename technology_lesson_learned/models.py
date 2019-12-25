@@ -29,7 +29,7 @@ class ProjectNumber(models.Model):
 
     class Meta:
         app_label = 'technology_lesson_learned'
-        ordering = ('customer_name', 'project_name')
+        ordering = ('customer_name', 'project_number')
 
 
 # technology_lesson_learned 文章
