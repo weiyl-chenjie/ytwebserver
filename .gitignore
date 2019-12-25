@@ -2,4 +2,4 @@
 __pycache__/
 config.py
 static_collected/
-migrations/*.py
+technology_lesson_learned/migrations/*.py
