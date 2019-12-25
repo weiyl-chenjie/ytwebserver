@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static 'blogs/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap4.3.1/css/bootstrap.min.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'fontawesome/css/all.css' %}"> -->
+    <script defer src="{% static 'fontawesome/js/all.js' %}"></script>
+    <script type="text/javascript" src="{% static 'Highcharts-7.1.2/code/highcharts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'incubator-echarts-4.2.1/dist/echarts.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap4.3.1/jquery/jquery-3.4.1.min.js' %}"></script>
+    {% block header_style %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+
+        <a class="navbar-brand" href="{% url 'home' %}">烟台霍富测试网页</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
+                aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% block home_nav %}{% endblock %}" href="{% url 'andon:index' %}">Andon系统首页<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% block blogs_nav %}{% endblock %}" href="{% url 'blogs:index' %}">博客</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+    {% block jQuery_ajax %}{% endblock %}
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'bootstrap4.3.1/js/bootstrap.min.js' %}"></script>
+
+</body>
+</html>

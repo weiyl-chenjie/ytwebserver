@@ -1,0 +1,24 @@
+ul.blog-types{
+    list-style-type: none;
+}
+div.blog. h3{
+    margin-top: 0.5em;
+}
+div.blog:not(:last-child){
+    margin-bottom: 2em;
+    padding-bottom: 1em;
+    border-bottom: 1px solid #eee;
+}
+div.blog  p.blog-info{
+    margin-bottom: 0;
+}
+div.comment-area {
+    margin-bottom: 2em;
+}
+h3.comment-area-title {
+    border-bottom: 1px solid #CCCCCC;
+    padding-bottom: 1em;
+}
+div.django-ckeditor-widget {
+    width: 100%;
+}

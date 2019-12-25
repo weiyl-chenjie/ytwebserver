@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 
 def home(request):
-    context={}
+    context = {}
    
     return render(request, 'andon/index.html', context)
 

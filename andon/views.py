@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 import datetime
 import calendar
@@ -57,6 +58,7 @@ def get_records_group_by_date_or_production_line(request, all_records, data_to_p
 
 
 # Andon默认主页
+@login_required(login_url='/admin/login/')# 增加访问权限
 def index(request):
     # 查询所有生产计划信息
     all_records = Mps.objects.all().order_by('-start_time')
