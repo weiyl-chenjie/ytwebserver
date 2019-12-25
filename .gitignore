@@ -2,4 +2,4 @@
 __pycache__/
 config.py
 static_collected/
-migrations/
+*_initial.py
