@@ -3,7 +3,5 @@ __pycache__/
 config.py
 static_collected/
 
-technology_lesson_learned/migrations/*.py
-!technology_lesson_learned/migrations/__init__.py
-andon/migrations/*.py
-!andon/migrations/__init__.py
+*/migrations/*.py
+!*/migrations/__init__.py
