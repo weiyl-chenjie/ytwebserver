@@ -2,5 +2,5 @@
 __pycache__/
 config.py
 static_collected/
-/migrations/*.py
-!/migrations/__init__.py
+migrations/*.py
+!migrations/*.py
