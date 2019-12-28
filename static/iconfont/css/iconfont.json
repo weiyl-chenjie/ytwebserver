@@ -1,0 +1,114 @@
+{
+  "id": "1384329",
+  "name": "andon系统",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "524001",
+      "name": "日期",
+      "font_class": "riqi1",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "2699688",
+      "name": "stop",
+      "font_class": "stop",
+      "unicode": "e693",
+      "unicode_decimal": 59027
+    },
+    {
+      "icon_id": "3900960",
+      "name": "日期",
+      "font_class": "riqi",
+      "unicode": "e66b",
+      "unicode_decimal": 58987
+    },
+    {
+      "icon_id": "3903119",
+      "name": "日期",
+      "font_class": "riqi-",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "3921870",
+      "name": "旧版",
+      "font_class": "Group",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "5129931",
+      "name": "012-warning",
+      "font_class": "-warning",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "5130008",
+      "name": "050-stop",
+      "font_class": "-stop",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "5395768",
+      "name": "创建时间",
+      "font_class": "chuangjianshijian",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "6607870",
+      "name": "ico_运营管理_员工信息查询",
+      "font_class": "ico_yunyingguanli_yuangongxinxichaxun",
+      "unicode": "e958",
+      "unicode_decimal": 59736
+    },
+    {
+      "icon_id": "6919769",
+      "name": "old",
+      "font_class": "old",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "7747120",
+      "name": "warning",
+      "font_class": "warning",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    },
+    {
+      "icon_id": "7900767",
+      "name": "管理员-用户查询",
+      "font_class": "guanliyuan-yonghuchaxun",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "9210345",
+      "name": "看板",
+      "font_class": "kanban",
+      "unicode": "e6dd",
+      "unicode_decimal": 59101
+    },
+    {
+      "icon_id": "9726627",
+      "name": "旧版",
+      "font_class": "old-version",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "11121472",
+      "name": "项目",
+      "font_class": "xiangmu",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    }
+  ]
+}

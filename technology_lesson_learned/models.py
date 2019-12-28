@@ -12,15 +12,20 @@ class Customer(models.Model):
     # 客户名称
     customer_name = models.CharField(max_length=20, primary_key=True, verbose_name='客户名称')
 
+    def __str__(self):
+        return self.customer_name
+
     class Meta:
         app_label = 'technology_lesson_learned'
+        verbose_name = "客户列表"
+        verbose_name_plural = verbose_name
         ordering = ('customer_name',)
 
 
 # 项目号
 class ProjectNumber(models.Model):
     # 客户名称
-    customer_name = models.ForeignKey(Customer, on_delete=models.DO_NOTHING)
+    customer_name = models.ForeignKey(Customer, on_delete=models.DO_NOTHING, verbose_name='客户')
     # 项目号
     project_number = models.CharField(max_length=20, primary_key=True, verbose_name='项目号')
 
@@ -29,6 +34,8 @@ class ProjectNumber(models.Model):
 
     class Meta:
         app_label = 'technology_lesson_learned'
+        verbose_name = "项目号"
+        verbose_name_plural = verbose_name
         ordering = ('customer_name', 'project_number')
 
 
@@ -55,4 +62,6 @@ class Article(models.Model):
     class Meta:
         app_label = 'technology_lesson_learned'
         # unique_together = (("author", "title"),)
+        verbose_name = "文章"
+        verbose_name_plural = verbose_name
         ordering = ('-created_date',)

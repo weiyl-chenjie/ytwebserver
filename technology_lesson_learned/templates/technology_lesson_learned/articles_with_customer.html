@@ -1,0 +1,8 @@
+{% extends 'technology_lesson_learned/index.html' %}
+{% block title %}
+    {{ blog_type.type_name }}
+{% endblock %}
+{% block article_list_title %}
+    分类:{{ articles_to_show_first.project_info }}&nbsp;&nbsp;    &nbsp;&nbsp;
+    <a href="{% url 'technology_lesson_learned:index' %}">查看全部文章</a>
+{% endblock %}

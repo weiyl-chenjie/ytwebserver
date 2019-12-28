@@ -1,15 +1,16 @@
-ul.blog-types{
+ul.article-customer{
     list-style-type: none;
+    padding-left: 0px;
 }
-div.blog. h3{
+div.article. h3{
     margin-top: 0.5em;
 }
-div.blog:not(:last-child){
+div.article:not(:last-child){
     margin-bottom: 2em;
     padding-bottom: 1em;
     border-bottom: 1px solid #eee;
 }
-div.blog  p.blog-info{
+div.article  p.article-info{
     margin-bottom: 0;
 }
 div.comment-area {

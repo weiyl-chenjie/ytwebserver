@@ -1,23 +1,37 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="zh-cn" xmlns="http://www.w3.org/1999/html">
+<html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{% static 'blogs/css/base.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap4.3.1/css/bootstrap.min.css' %}">
-    <!-- <link rel="stylesheet" href="{% static 'fontawesome/css/all.css' %}"> -->
-    <script defer src="{% static 'fontawesome/js/all.js' %}"></script>
-    <script type="text/javascript" src="{% static 'Highcharts-7.1.2/code/highcharts.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker3.min.css' %}">
+
+    <script type="text/javascript" src="{% static 'iconfont/js/iconfont.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'iconfont/css/general.css' %}">
+    <link rel="stylesheet" href="{% static 'iconfont/css/iconfont.css' %}">
+
     <script type="text/javascript" src="{% static 'incubator-echarts-4.2.1/dist/echarts.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap4.3.1/jquery/jquery-3.4.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.zh-CN.min.js' %}" charset="UTF-8"></script>
     {% block header_style %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-
-        <a class="navbar-brand" href="{% url 'home' %}">烟台霍富测试网页</a>
+        <a class="navbar-brand btn-outline-info" href="{% url 'technology_lesson_learned:index' %}" style="margin-right: 60px">
+            <svg class="icon" aria-hidden="true" style="font-size: larger">
+                <use xlink:href="#icon-kanban"></use>
+            </svg>
+            <span style="font-family: 华文隶书;">Lesson_Learned首页</span>
+        </a>
+        <a class="navbar-brand btn-outline-info" href="/admin/technology_lesson_learned" style="margin-right: 60px">
+            <svg class="icon" aria-hidden="true" style="font-size: larger">
+                <use xlink:href="#icon-guanliyuan-yonghuchaxun"></use>
+            </svg>
+            <span style="font-family: 华文隶书;">Lesson_Learned管理界面</span>
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
                 aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -25,10 +39,16 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link {% block home_nav %}{% endblock %}" href="{% url 'andon:index' %}">Andon系统首页<span class="sr-only">(current)</span></a>
+                    <a class="nav-link {% block home_nav %}{% endblock %}" href="/admin/andon/">
+                        <span class="sr-only">
+
+                        </span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% block blogs_nav %}{% endblock %}" href="{% url 'blogs:index' %}">博客</a>
+                    <a class="nav-link {% block blogs_nav %}{% endblock %}" href="{% url 'andon:index' %}">
+
+                    </a>
                 </li>
             </ul>
         </div>

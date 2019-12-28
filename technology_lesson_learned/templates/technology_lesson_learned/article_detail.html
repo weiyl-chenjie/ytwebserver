@@ -1,0 +1,79 @@
+{% extends 'technology_lesson_learned/base.html' %}
+{% load static %}
+{# 页面标题 #}
+{% block header_style %}
+<link rel="stylesheet" href="{% static 'technology_lesson_learned/css/articles.css' %}"
+      xmlns="http://www.w3.org/1999/html">
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+{% endblock %}
+{% block title %}
+    {{ blog.title }}
+{% endblock %}
+
+{# 页面内容 #}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-10 offset-1">
+                <li style="display: inline-block;">
+                    <h3>{{ article.title }}</h3>
+                </li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                <ul class="article-customer">
+                    <li style="display: inline-block">
+                        <i class="iconfont icon-xiangmu"></i>
+                        <a href="{% url 'technology_lesson_learned:articles_with_project_number' article.project_info.project_number %}">
+                            {{ article.project_info }}&nbsp;&nbsp;
+                        </a>
+                    </li>
+                    <li style="display: inline-block">
+                        <i class="iconfont icon-chuangjianshijian"></i>
+                        {{ article.created_date|date:"Y-m-d H:i:s" }}&nbsp;&nbsp;
+                    </li>
+                    <li style="display: inline-block;">
+                        <a href="{% url 'technology_lesson_learned:index' %}">查看全部博客</a>
+                    </li>
+                </ul>
+                <div class="card text-center">
+                    <div class="card-header">
+                        <span style="color: #d92525; font-family: 华文楷体; font-size: 2em;"><strong>问题描述：</strong></span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="article-customer">
+                            {{ article.issue|safe }}
+                        </ul>
+                    </div>
+                </div>
+                <p></p>
+                <div class="card text-center">
+                    <div class="card-header">
+                        <span style="color: #50dd09; font-family: 华文楷体; font-size: 2em;"><strong>解决方案：</strong></span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="article-customer">
+                            {{ article.solution|safe }}
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <p>上一篇:
+                        {% if previous_article %}
+                            <a href="{% url 'technology_lesson_learned:article_detail' previous_article.pk %}">{{ previous_article.title }}</a>
+                        {% else %}
+                            已经是第一篇
+                        {% endif %}
+                    </p>
+                    <p>下一篇:
+                        {% if next_article %}
+                            <a href="{% url 'technology_lesson_learned:article_detail' next_article.pk %}">{{ next_article.title }}</a>
+                        {% else %}
+                            已经是最后一篇
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block articles_nav %}active{% endblock %}

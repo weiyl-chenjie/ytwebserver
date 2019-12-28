@@ -1,14 +1,14 @@
-{% extends 'blogs/base.html' %}
+{% extends 'technology_lesson_learned/base.html' %}
 {% load static %}
 {# 页面标题 #}
 {% block header_style %}
-    <link rel="stylesheet" href="{% static 'blogs/css/blogs.css' %}">
+    <link rel="stylesheet" href="{% static 'technology_lesson_learned/css/articles.css' %}">
 {% endblock %}
 {% block title %}
     我的网站
 {% endblock %}
 
-{% block blogs_nav %}active{% endblock %}
+{% block articles_nav %}active{% endblock %}
 
 {% block content %}
     <div class="container">
@@ -16,34 +16,33 @@
             <div class="col-12 col-sm-8 col-md-9 col-lg-10">
                 <div class="card" style="margin-bottom: 2em">
                     <div class="card-header">
-                        {% block blog_list_title %}博客列表(一共有{{ blog_list|length }}篇博客){% endblock %}
+                        {% block article_list_title %}文章列表(一共有{{ articles_to_show|length }}篇文章){% endblock %}
                     </div>
                     <div class="card-body">
-                       {% for blog in page_of_blogs.object_list %}  <!--按分页设置显示每页的信息-->
-                            <div class="blog">
-                                <h3 class=""><a href="{% url 'blogs:blog_detail' blog.pk %}">{{ blog.title }}</a></h3>
-                                <p class="blog-info">
-                                    <i class="fas fa-tag"></i>
-                                    <a href="{% url 'blogs:blogs_with_type' blog.blog_type.pk %}">
-                                        {{ blog.blog_type }}&nbsp&nbsp
+                       {% for article in page_of_articles.object_list %}  <!--按分页设置显示每页的信息-->
+                            <div class="article">
+                                <h3 class=""><a href="{% url 'technology_lesson_learned:article_detail' article.pk %}">{{ article.title }}</a></h3>
+                                <p class="article-info">
+                                    <i class="iconfont icon-xiangmu"></i>
+                                    <a href="{% url 'technology_lesson_learned:articles_with_project_number' article.project_info.project_number %}">
+                                        {{ article.project_info }}&nbsp;&nbsp;
                                     </a>
-                                    <i class="fas fa-calendar-alt"></i>{{ blog.created_date|date:"Y-m-d H:i:s" }}&nbsp&nbsp
-                                    <i class="fas fa-book-reader"></i>{{ blog.get_read_num }}
+                                    <i class="iconfont icon-chuangjianshijian"></i>
+                                    {{ article.created_date|date:"Y-m-d H:i:s" }}&nbsp;&nbsp;
                                 </p>
-
-                                <p>{{ blog.content|safe|striptags|truncatechars:30 }}</p>
+                                <p>{{ article.issue|safe|striptags|truncatechars:30 }}</p>
                             </div>
 
                         {% empty %}
-                            <p>-- 暂无博客，敬请期待 --</p>
+                            <p>-- 暂无文章，敬请期待 --</p>
                         {% endfor %}
                     </div>
                 </div>
                 <div>
                     <ul class="pagination justify-content-center">
-                        {% if page_of_blogs.has_previous %}
+                        {% if page_of_articles.has_previous %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ page_of_blogs.previous_page_number }}">
+                                <a class="page-link" href="?page={{ page_of_articles.previous_page_number }}">
                                     <span aria-hidden="true">&laquo;</span>
                                     <span class="sr-only">Previous</span>
                                 </a>
@@ -69,7 +68,7 @@
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
-                        {% if page_of_blogs.has_next %}
+                        {% if page_of_articles.has_next %}
                             <li class="page-item">
                                 <a class="page-link" href="?page={{ page_of_blogs.next_page_number }}">
                                 <span aria-hidden="true">&raquo;</span>
@@ -88,16 +87,16 @@
                 </div>
             </div>
             <div class="hidden col-md-4 col-md-3 col-lg-2">
-                <div class="card">
+                <div class="card text-center">
                     <div class="card-header">
-                        博客分类
+                        按客户归档
                     </div>
                     <div class="card-body">
-                        <ul class="blog-types">
-                            {% for blog_type in blog_types %}
+                        <ul class="article-customer">
+                            {% for customer in customers %}
                                 <li class="card-title">
-                                    <a href="{% url 'blogs:blogs_with_type' blog_type.pk %}">
-                                        {{ blog_type.type_name }}({{ blog_type.blog_count }})
+                                    <a href="{% url 'technology_lesson_learned:articles_with_customer' customer.customer_name %}">
+                                        {{ customer.customer_name }}({{ customer.article_count }})
                                     </a>
                                 </li>
                             {% empty %}
@@ -108,16 +107,16 @@
                         </ul>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card text-center">
                     <div class="card-header">
-                        日期归档
+                        按日期归档
                     </div>
                     <div class="card-body">
-                        <ul>
-                            {% for blog_date, blog_count in blog_dates.items %}
+                        <ul class="article-customer">
+                            {% for article_date, article_count in article_dates.items %}
                                 <li style="list-style-type: none">
-                                    <a href="{% url 'blogs:blogs_with_date' blog_date.year blog_date.month %}">
-                                        {{ blog_date|date:"Y年m月" }}({{ blog_count }})
+                                    <a href="{% url 'technology_lesson_learned:articles_with_date' article_date.year article_date.month %}">
+                                        {{ article_date|date:"Y年m月" }}({{ article_count }})
                                     </a>
                                 </li>
                             {% endfor %}
