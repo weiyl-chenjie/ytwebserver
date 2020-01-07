@@ -1,0 +1,30 @@
+{% load static %}
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static 'bootstrap4.3.1/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker3.min.css' %}">
+
+    <script type="text/javascript" src="{% static 'iconfont/js/iconfont.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'iconfont/css/general.css' %}">
+    <link rel="stylesheet" href="{% static 'iconfont/css/iconfont.css' %}">
+
+    <script type="text/javascript" src="{% static 'incubator-echarts-4.2.1/dist/echarts.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap4.3.1/jquery/jquery-3.4.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.zh-CN.min.js' %}" charset="UTF-8"></script>
+    {% block header_style %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    {% block nav %}{% endblock %}
+
+    {% block content %}{% endblock %}
+    {% block jQuery_ajax %}{% endblock %}
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'bootstrap4.3.1/js/bootstrap.min.js' %}"></script>
+
+</body>
+</html>

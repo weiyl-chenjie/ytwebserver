@@ -8,22 +8,24 @@ from django.contrib import auth
 from django.contrib.auth.models import Group
 
 from django.conf import settings
+
 from .models import Article, Customer
-from .forms import LoginForm
 
 
-def login(request):
-    if request.method == 'POST':
-        login_form = LoginForm(request.POST)
-        if login_form.is_valid():
-            user = login_form.cleaned_data['user']
-            auth.login(request, user)
-            return redirect('/technology_lesson_learned')
-    else:
-        login_form = LoginForm()
-    context = {}
-    context['login_form'] = login_form
-    return render(request, 'login.html', context)
+def user_is_authenticated(request):
+    # 返回值：1代表有权限，-1代表没有权限，-2代表未登陆
+    user = request.user
+    if user.is_authenticated:  # 如果已登录
+        app_groups = ['technology_lesson_learned_user', 'technology_lesson_learned_admin']  # 有权限查看该页面的组
+        user_group_set = user.groups.all()  # 获取该用户所在的所有组
+        user_group_list = [group.name for group in user_group_set]  # 把组由Group类型变成list元素
+        has_permission = list(set(app_groups) & set(user_group_list))  # 取app_groups和user_group_list的交集，如果不为空，则表示有权限查看
+        if has_permission:
+            return 1  # 1代表有权限
+        else:
+            return -1  # -1代表没有权限
+    else:  # 如果未认证（未登录），跳转到登陆界面
+        return -2  # -2代表未登陆
 
 
 def get_blog_list_common_data(request, articles_all_list):
@@ -63,49 +65,77 @@ def get_blog_list_common_data(request, articles_all_list):
 
 
 def article_detail(request, article_pk):
-    article = get_object_or_404(Article, pk=article_pk)
-    article_content_type = ContentType.objects.get_for_model(article)
+    if user_is_authenticated(request):
+        article = get_object_or_404(Article, pk=article_pk)
+        article_content_type = ContentType.objects.get_for_model(article)
 
-    context = {}
-    context['article'] = article
-    context['previous_article'] = Article.objects.filter(created_date__lt=article.created_date).first()
-    context['next_article'] = Article.objects.filter(created_date__gt=article.created_date).last()
+        context = {}
+        context['article'] = article
+        context['previous_article'] = Article.objects.filter(created_date__lt=article.created_date).first()
+        context['next_article'] = Article.objects.filter(created_date__gt=article.created_date).last()
 
-    data = {}
-    data['content_type'] = article_content_type.model
-    data['article_id'] = article_pk
-    response = render(request, 'technology_lesson_learned/article_detail.html', context)
+        data = {}
+        data['content_type'] = article_content_type.model
+        data['article_id'] = article_pk
+        response = render(request, 'technology_lesson_learned/article_detail.html', context)
 
-    return response
+        return response
+    else:
+        return redirect('/technology_lesson_learned/login/')
 
 
 def articles_with_customer(request, customer):
-    print('进入articles_with_customer')
-    articles_all_list = Article.objects.filter(project_info__customer_name=customer)
-    context = get_blog_list_common_data(request, articles_all_list)
-    return render(request, 'technology_lesson_learned/articles_with_customer.html', context)
+    if user_is_authenticated(request):
+        articles_all_list = Article.objects.filter(project_info__customer_name=customer)
+        context = get_blog_list_common_data(request, articles_all_list)
+        return render(request, 'technology_lesson_learned/articles_with_customer.html', context)
+    else:
+        return redirect('/technology_lesson_learned/login/')
 
 
 def articles_with_project_number(request, project_number):
-    articles_all_list = Article.objects.filter(project_info__project_number=project_number)
-    context = get_blog_list_common_data(request, articles_all_list)
-    context['articles_to_show_first'] = articles_all_list.first()
-    return render(request, 'technology_lesson_learned/articles_with_project_number.html', context)
+    if user_is_authenticated(request):
+        articles_all_list = Article.objects.filter(project_info__project_number=project_number)
+        context = get_blog_list_common_data(request, articles_all_list)
+        context['articles_to_show_first'] = articles_all_list.first()
+        return render(request, 'technology_lesson_learned/articles_with_project_number.html', context)
+    else:
+        return redirect('/technology_lesson_learned/login/')
 
 
 def articles_with_date(request, year, month):
-    articles_all_list = Article.objects.filter(created_date__year=year, created_date__month=month)
-    context = get_blog_list_common_data(request, articles_all_list)
-    context['articles_with_date'] = '%s年%s月' % (year, month)
-    return render(request, 'technology_lesson_learned/articles_with_date.html', context)
+    if user_is_authenticated(request):
+        articles_all_list = Article.objects.filter(created_date__year=year, created_date__month=month)
+        context = get_blog_list_common_data(request, articles_all_list)
+        context['articles_with_date'] = '%s年%s月' % (year, month)
+        return render(request, 'technology_lesson_learned/articles_with_date.html', context)
+    else:
+        return redirect('/technology_lesson_learned/login/')
 
 
-@login_required(login_url='/admin/login/')# 增加访问权限
 def index(request):
     context = {}
-    # 查询所有文章
-    articles_all_list = Article.objects.all().order_by('-created_date')
-    list(articles_all_list)  # 执行查询，后面直接用all_articles将不再查询数据库，否则每次使用all_articles都会查询数据库
-    context = get_blog_list_common_data(request, articles_all_list)
+    context['path'] = request.get_full_path()
+    res = user_is_authenticated(request)
+    app_groups = ['technology_lesson_learned_user', 'technology_lesson_learned_admin']  # 有权限查看该页面的组
+    user = request.user
+    # print(user.first_name)
+    if res == 1:  # 如果用户已登录(已认证)
+        user_group_set = user.groups.all()  # 获取该用户所在的所有组
+        user_group_list = [group.name for group in user_group_set]  # 把组由Group类型变成list元素
+        has_permission = list(set(app_groups) & set(user_group_list))  # 取app_groups和user_group_list的交集，如果不为空，则表示有权限查看
+        # print(has_permission)
+        if has_permission:
+            # 查询所有文章
+            articles_all_list = Article.objects.all().order_by('-created_date')
+            list(articles_all_list)  # 执行查询，后面直接用all_articles将不再查询数据库，否则每次使用all_articles都会查询数据库
+            context = get_blog_list_common_data(request, articles_all_list)
+            context['user'] = user
+            return render(request, 'technology_lesson_learned/index.html', context)
+        else:
+            return render(request, 'error.html')
+    elif res == -1:  # 如果没有权限
+        return render(request, 'forbidden.html')
+    elif res == -2:  # 如果未登陆
+        return redirect('/login?from=technology_lesson_learned')
 
-    return render(request, 'technology_lesson_learned/index.html', context)

@@ -16,11 +16,7 @@ class LoginForm(forms.Form):
         if user is None:
             raise forms.ValidationError('用户名或密码不正确')
         else:
-            group_set = str(Group.objects.get(user=user))
-            if group_set.startswith('technology_lesson_learned'):
-                self.cleaned_data['user'] = user
-            else:
-                raise forms.ValidationError('您无权查看此页面')
+            self.cleaned_data['user'] = user
         return self.cleaned_data
 
 

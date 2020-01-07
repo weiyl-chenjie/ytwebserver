@@ -1,58 +1,43 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
 <html lang="zh-cn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{% static 'bootstrap4.3.1/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker3.min.css' %}">
-
-    <script type="text/javascript" src="{% static 'iconfont/js/iconfont.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'iconfont/css/general.css' %}">
-    <link rel="stylesheet" href="{% static 'iconfont/css/iconfont.css' %}">
-
-    <script type="text/javascript" src="{% static 'incubator-echarts-4.2.1/dist/echarts.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bootstrap4.3.1/jquery/jquery-3.4.1.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.zh-CN.min.js' %}" charset="UTF-8"></script>
-    {% block header_style %}{% endblock %}
-    <title>{% block title %}{% endblock %}</title>
-</head>
 <body>
-    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand btn-outline-info" href="{% url 'technology_lesson_learned:index' %}" style="margin-right: 60px">
-            <svg class="icon" aria-hidden="true" style="font-size: larger">
-                <use xlink:href="#icon-kanban"></use>
-            </svg>
-            <span style="font-family: 华文隶书;">Lesson_Learned首页</span>
-        </a>
-        <a class="navbar-brand btn-outline-info" href="/admin/technology_lesson_learned" style="margin-right: 60px">
-            <svg class="icon" aria-hidden="true" style="font-size: larger">
-                <use xlink:href="#icon-guanliyuan-yonghuchaxun"></use>
-            </svg>
-            <span style="font-family: 华文隶书;">Lesson_Learned管理界面</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
-                aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link {% block home_nav %}{% endblock %}" href="/admin/andon/">
-                        <span class="sr-only">
-
-                        </span>
+    {% block nav %}
+        <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand btn-outline-info" href="{% url 'technology_lesson_learned:index' %}" style="margin-right: 60px">
+                <svg class="icon" aria-hidden="true" style="font-size: larger">
+                    <use xlink:href="#icon-kanban"></use>
+                </svg>
+                <span style="font-family: 华文隶书;">Lesson_Learned首页</span>
+            </a>
+            <a class="navbar-brand btn-outline-info" href="/admin/technology_lesson_learned" style="margin-right: 60px">
+                <svg class="icon" aria-hidden="true" style="font-size: larger">
+                    <use xlink:href="#icon-guanliyuan-yonghuchaxun"></use>
+                </svg>
+                <span style="font-family: 华文隶书;">Lesson_Learned管理界面</span>
+            </a>
+            <li style="list-style-type: none" class="nav-item dropdown">
+                {% if user.is_authenticated %}
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {{user.first_name}}
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% block blogs_nav %}{% endblock %}" href="{% url 'andon:index' %}">
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="/user_info/">基本信息</a>
+                      <a class="dropdown-item" href="/logout/?from={{ request.get_full_path }}">注销</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                {% else %}
+                    <a href="/login/?from=.">登陆</a>
+                {% endif %}
+            </li>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="按标题搜索" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </nav>
+    {% endblock %}
 
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
 
     {% block content %}{% endblock %}
     {% block jQuery_ajax %}{% endblock %}
