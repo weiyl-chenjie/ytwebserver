@@ -45,8 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # 第三方app
+    # 富文本编辑
     'ckeditor',
     'ckeditor_uploader',
+    # 搜索引擎
+    'haystack',
     
     # 自己的app
     'andon',
@@ -252,3 +255,17 @@ elif platform.system() == 'Linux':
 
 # 全局变量
 EACH_PAGE_NUMBER = 5  # 分页用的，每页包含几条数据
+
+# 添加搜索引擎
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        # 指定使用的搜索引擎
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        # 指定索引文件存放位置
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}
+
+# 新增的数据自动生成索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 10

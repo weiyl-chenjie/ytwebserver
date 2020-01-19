@@ -16,6 +16,10 @@
                 </svg>
                 <span style="font-family: 华文隶书;">Lesson_Learned管理界面</span>
             </a>
+            <form class="form-inline" action="{% url 'haystack_search' %}" method="get">
+                <input class="form-control mr-sm-2" type="search" name="q" placeholder="按标题搜索" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
             <li style="list-style-type: none" class="nav-item dropdown">
                 {% if user.is_authenticated %}
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -31,10 +35,7 @@
                     <a href="/login/?from=.">登陆</a>
                 {% endif %}
             </li>
-            <form class="form-inline">
-                <input class="form-control mr-sm-2" type="search" placeholder="按标题搜索" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+
         </nav>
     {% endblock %}
 

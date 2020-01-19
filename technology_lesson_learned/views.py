@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required  # 权限
 # Create your views here.
@@ -9,7 +10,37 @@ from django.contrib.auth.models import Group
 
 from django.conf import settings
 
+# 第三方模块
+from haystack.views import SearchView
+from ytwebserver.settings import HAYSTACK_SEARCH_RESULTS_PER_PAGE
+
+# 自己的模块
 from .models import Article, Customer
+
+
+class MySearchView(SearchView):
+    def build_page(self):
+        print('进入搜索页面：')
+        # 分页重写
+        context = super(MySearchView, self).extra_context()  # 继承自带的context
+        try:
+            page_no = int(self.request.GET.get('page', 1))
+        except Exception:
+            return HttpResponse("Not a valid number of page.")
+        if page_no < 1:
+            return HttpResponse("Page should be 1 or greater.")
+        a = []
+        for i in self.results:
+            a.append(i.object)
+        paginator = Paginator(a, HAYSTACK_SEARCH_RESULTS_PER_PAGE)
+        page = paginator.page(page_no)
+        print('搜索的文章:', page)
+        return (paginator, page)
+
+    def extra_context(self):
+        context = super(MySearchView, self).extra_context  # 继承自带的context
+        context['title'] = '搜索'
+        return context
 
 
 def user_is_authenticated(request):

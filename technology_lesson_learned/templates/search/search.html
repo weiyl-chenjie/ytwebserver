@@ -1,0 +1,55 @@
+{% extends 'technology_lesson_learned/base.html' %}
+{% load static %}
+{# 页面标题 #}
+{% block header_style %}
+    <link rel="stylesheet" href="{% static 'technology_lesson_learned/css/articles.css' %}">
+{% endblock %}
+{% block title %}
+    我的网站
+{% endblock %}
+
+{% block articles_nav %}active{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-sm-8 col-md-9 col-lg-10">
+                <div class="card" style="margin-bottom: 2em">
+                    <div class="card-header">
+                        {% block article_list_title %}文章列表{{ page }}{% endblock %}
+                    </div>
+                    <div class="card-body">
+                       {% for article in page.object_list %}  <!--按分页设置显示每页的信息-->
+                            <div class="article">
+                                <h3 class=""><a href="{% url 'technology_lesson_learned:article_detail' article.object.pk %}">{{ article.object.title }}</a></h3>
+                                <p class="article-info">
+                                    <i class="iconfont icon-xiangmu"></i>
+                                    <a href="{% url 'technology_lesson_learned:articles_with_project_number' article.object.project_info.project_number %}">
+                                        {{ article.object.project_info }}&nbsp;&nbsp;
+                                    </a>
+                                    <i class="iconfont icon-chuangjianshijian"></i>
+                                    {{ article.object.created_date|date:"Y-m-d H:i:s" }}&nbsp;&nbsp;
+                                </p>
+                                <p>{{ article.object.issue|safe|striptags|truncatechars:30 }}</p>
+                            </div>
+
+                        {% empty %}
+                            <p>-- 暂无文章，敬请期待 --</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <ul class="pagination justify-content-center">
+                        {% if page.has_previous or page.has_next %}
+                            <div>
+                                {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; 上一页{% if page.has_previous %}</a>{% endif %}
+                                |
+                                {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}下一页 &raquo;{% if page.has_next %}</a>{% endif %}
+                            </div>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
