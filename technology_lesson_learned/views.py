@@ -35,7 +35,7 @@ class MySearchView(SearchView):
         paginator = Paginator(a, HAYSTACK_SEARCH_RESULTS_PER_PAGE)
         page = paginator.page(page_no)
         print('搜索的文章:', page)
-        return (paginator, page)
+        return paginator, page
 
     def extra_context(self):
         context = super(MySearchView, self).extra_context  # 继承自带的context
