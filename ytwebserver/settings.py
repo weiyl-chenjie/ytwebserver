@@ -92,8 +92,8 @@ WSGI_APPLICATION = 'ytwebserver.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'MeasuredData',
-        'USER': 'MeasuredData',
+        'NAME': 'ytwebserver',
+        'USER': 'ytwebserver',
         'PASSWORD': config.DATABASE_PASSWORD_default,
         'HOST': config.HOST_default,
         'PORT': '5432',
