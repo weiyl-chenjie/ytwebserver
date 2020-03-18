@@ -100,7 +100,7 @@
                                     </a>
                                 </li>
                             {% empty %}
-                                <li>
+                                <li style="list-style-type: none">
                                     暂无分类
                                 </li>
                             {% endfor %}
@@ -118,6 +118,10 @@
                                     <a href="{% url 'technology_lesson_learned:articles_with_date' article_date.year article_date.month %}">
                                         {{ article_date|date:"Y年m月" }}({{ article_count }})
                                     </a>
+                                </li>
+                                {% empty %}
+                                <li style="list-style-type: none">
+                                    暂无分类
                                 </li>
                             {% endfor %}
                         </ul>
