@@ -174,8 +174,11 @@ def monthly(request, menu_id, date):
     menu_obj = Menu.objects.get(id=menu_id)  # 获得menu_id对应的数据项
 
     mdays = calendar.monthrange(date.year, date.month)[1]  # 获取该月份的天数
-    prev_month = "-".join([str(x) for x in (calendar.prevmonth(date.year, date.month))])  # 上个月，字符串格式为2019-7
-    next_month = "-".join([str(x) for x in (calendar.nextmonth(date.year, date.month))])  # 下个月，字符串格式为2019-9
+    # python3.8.1中，把calendar模块的prevmonth和nextmonth函数修改为了_prevmonth和_nextmonth函数
+    # prev_month = "-".join([str(x) for x in (calendar.prevmonth(date.year, date.month))])  # 上个月，字符串格式为2019-7
+    # next_month = "-".join([str(x) for x in (calendar.nextmonth(date.year, date.month))])  # 下个月，字符串格式为2019-9
+    prev_month = "-".join([str(x) for x in (calendar._prevmonth(date.year, date.month))])  # 上个月，字符串格式为2019-7
+    next_month = "-".join([str(x) for x in (calendar._nextmonth(date.year, date.month))])  # 下个月，字符串格式为2019-9
 
 
     # 查询本月计划生产的menu_info_id为menu_id的所有项目,并按日期去重, 同理查询停线记录的信息
