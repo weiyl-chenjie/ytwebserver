@@ -14,11 +14,12 @@ class Menu(models.Model):  # 项目、流水线信息
     project = models.CharField(max_length=20, verbose_name="项目")
     production_line = models.CharField(max_length=20, verbose_name="流水线")
     product = models.CharField(max_length=20, verbose_name="产品")
+    assembly_number = models.CharField(max_length=20, verbose_name="总成号")
     ip = models.GenericIPAddressField(verbose_name="PLC的IP")
     is_stop = models.BooleanField(verbose_name='是否已停产', default=False)
 
     def __str__(self):
-        return self.project + self.production_line + self.product
+        return self.project + self.production_line + self.product + self.assembly_number
 
     class Meta:
         app_label = "andon"
@@ -31,6 +32,7 @@ class Menu(models.Model):  # 项目、流水线信息
 class Mps(models.Model):  # 生产计划
     # 在数据库中的字段为menu_info_id
     menu_info = models.ForeignKey(Menu, on_delete=models.DO_NOTHING, verbose_name="项目信息")
+
     plan_outputs = models.PositiveIntegerField(verbose_name="计划产量")
     workers = models.PositiveIntegerField(verbose_name="生产人数")
     start_time = models.DateTimeField(verbose_name="开始生产时间")
@@ -45,9 +47,17 @@ class Mps(models.Model):  # 生产计划
         if self.start_time > self.end_time:
             raise ValidationError({'start_time': _("开始时间不能晚于结束时间")})
 
+    # 自定义的显示字段，在admin.py中可以像使用字段一样使用该函数。比如要显示plc_ip，可以使用list_display = ('plc_ip')
+    # plc的ip
     def plc_ip(self):
         return self.menu_info.ip
+
+    # 零件总成号
+    def assembly_number(self):
+        return self.menu_info.assembly_number
+
     plc_ip.short_description = "PLC的IP"
+    assembly_number.short_description = "总成号"
 
     class Meta:
         app_label = "andon"

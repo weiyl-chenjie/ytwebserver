@@ -6,13 +6,13 @@ from .models import Menu, Mps, History, Maintainers, Managers, LineStop
 
 @admin.register(Menu)
 class MenuAdmin(admin.ModelAdmin):
-    list_display = ('id', 'project', 'production_line', 'product', 'ip', 'is_stop')
+    list_display = ('id', 'project', 'production_line', 'product', 'assembly_number', 'ip', 'is_stop')
     ordering = ('project', 'production_line')
 
 
 @admin.register(Mps)
 class MpsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'menu_info', 'plan_outputs', 'workers', 'start_time', 'end_time', 'plc_ip')
+    list_display = ('id', 'menu_info', 'assembly_number', 'plan_outputs', 'workers', 'start_time', 'end_time', 'plc_ip')
 
 
 @admin.register(History)
