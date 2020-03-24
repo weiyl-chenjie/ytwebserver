@@ -58,7 +58,7 @@ def get_records_group_by_date_or_production_line(request, all_records, data_to_p
 
 
 # Andon默认主页
-@login_required(login_url='/admin/login/')# 增加访问权限
+# @login_required(login_url='/admin/login/')# 增加访问权限
 def index(request):
     # 查询所有生产计划信息
     all_records = Mps.objects.all().order_by('-start_time')
@@ -179,7 +179,6 @@ def monthly(request, menu_id, date):
     # next_month = "-".join([str(x) for x in (calendar.nextmonth(date.year, date.month))])  # 下个月，字符串格式为2019-9
     prev_month = "-".join([str(x) for x in (calendar._prevmonth(date.year, date.month))])  # 上个月，字符串格式为2019-7
     next_month = "-".join([str(x) for x in (calendar._nextmonth(date.year, date.month))])  # 下个月，字符串格式为2019-9
-
 
     # 查询本月计划生产的menu_info_id为menu_id的所有项目,并按日期去重, 同理查询停线记录的信息
     month_range = [date, datetime.datetime.strptime(next_month, "%Y-%m")]

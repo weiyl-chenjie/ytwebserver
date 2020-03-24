@@ -8,8 +8,13 @@
 {% endblock %}
 
 {% block content %}
-    <span style="color: #b21f2d">您无权查看此页面</span>
-    <br>
-    <a href="/">返回首页</a>
+    <div class="container">
+        <span style="color: #b21f2d">您无权查看此页面</span>
+        <br>
+        <a href="{% url 'logout' %}?from={{ request.get_full_path }}" class="btn btn-info" style="margin-top: 1em">重新登陆</a>
+        <br>
+        <a href="/" class="btn btn-primary" style="margin-top: 1em">返回首页</a>
+    </div>
+
 {% endblock %}
 
