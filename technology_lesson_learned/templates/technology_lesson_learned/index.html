@@ -100,7 +100,7 @@
                                     </a>
                                 </li>
                             {% empty %}
-                                <li style="list-style-type: none" class="text-center">
+                                <li class="text-center">
                                     暂无分类
                                 </li>
                             {% endfor %}
@@ -114,13 +114,13 @@
                     <div class="card-body">
                         <ul class="article-customer">
                             {% for article_date, article_count in article_dates.items %}
-                                <li style="list-style-type: none">
+                                <li class="card-title">
                                     <a href="{% url 'technology_lesson_learned:articles_with_date' article_date.year article_date.month %}">
                                         {{ article_date|date:"Y年m月" }}({{ article_count }})
                                     </a>
                                 </li>
                                 {% empty %}
-                                <li style="list-style-type: none" class="text-center">
+                                <li class="text-center">
                                     暂无分类
                                 </li>
                             {% endfor %}
