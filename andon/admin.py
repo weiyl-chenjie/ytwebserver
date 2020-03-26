@@ -28,3 +28,7 @@ class LineStopAdmin(admin.ModelAdmin):
 @admin.register(Maintainers)
 class MaintainersAdmin(admin.ModelAdmin):
     list_display = ('name', 'mailbox')
+
+@admin.register(Managers)
+class ManagersAdmin(admin.ModelAdmin):
+    list_display = ('name', 'mailbox')

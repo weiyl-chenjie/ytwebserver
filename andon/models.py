@@ -19,14 +19,13 @@ class Menu(models.Model):  # 项目、流水线信息
     is_stop = models.BooleanField(verbose_name='是否已停产', default=False)
 
     def __str__(self):
-        return self.project + self.production_line + self.product + self.assembly_number
+        return self.project + self.production_line + self.product + '-' + self.assembly_number
 
     class Meta:
         app_label = "andon"
         unique_together = (("project", "production_line", "product"),)
         verbose_name = "项目总览"
         verbose_name_plural = verbose_name
-        permissions = [('test_menu', '测试项目总览')]
 
 
 class Mps(models.Model):  # 生产计划
