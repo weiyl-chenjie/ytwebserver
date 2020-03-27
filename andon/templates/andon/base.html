@@ -1,10 +1,11 @@
-{% load static %}
+{% load static %}<!DOCTYPE html>
 <html lang="zh-cn" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="{% static 'bootstrap4.3.1/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-datepicker-1.9.0-dist/css/bootstrap-datepicker3.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-table/css/bootstrap-table.min.css' %}">
 
     <script type="text/javascript" src="{% static 'iconfont/js/iconfont.js' %}"></script>
     <link rel="stylesheet" href="{% static 'iconfont/css/general.css' %}">
@@ -63,7 +64,12 @@
     {% block jQuery_ajax %}{% endblock %}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script type="text/javascript" src="{% static 'popper/js/popper.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap4.3.1/js/bootstrap.min.js' %}"></script>
-
+    <script type="text/javascript" src="{% static 'bootstrap-table/js/bootstrap-table.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-table/js/bootstrap-table-zh-CN.min.js' %}"></script>
+    <!--
+    <script type="text/javascript" src="{% static 'bootstrap-table/js/bootstrap-table-locale-all.min.js' %}"></script>
+    -->
 </body>
 </html>

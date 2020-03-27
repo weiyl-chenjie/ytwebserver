@@ -396,7 +396,10 @@ def get_echarts_data(request):
     # 存储各个整点的计划产量(向上取整）
     series_plan_data = [math.ceil((mps_object.plan_outputs / len(x_axis)) * (x_axis.index(x) + 1)) for x in x_axis]
 
-    series_actual_data = []  # 存储各个整点的实际产量
+    # 存储送给bootstrap-table的数据
+    # 格式：[{'actual_outputs': 1, 'input_datetime': 2020-03-20 08:49:17.813583},
+    #       {'actual_outputs': 100, 'input_datetime': 2020-03-20 08:59:17.956534}]
+    bootstrap_table_data = []
 
     # 查询时间段内，记录中的各个小时实际产量的最大值及该小时对应的整点,返回格式为：
     # <QuerySet [{'input_datetime__hour': 9, 'actual_outputs__max': 300},
@@ -421,6 +424,12 @@ def get_echarts_data(request):
                        'series_actual_data': series_actual_data, 'mark_line_data': mps_object.plan_outputs,
                     'project_info': project_info}
 
+    outputs1 = list(History.objects.filter(input_datetime__range=(mps_object.start_time, mps_object.end_time)))
+    for i in outputs1:
+        bootstrap_table_data.append({'actual_outputs': i.actual_outputs, 'input_datetime': str(i.input_datetime)})
+
     data['status'] = 'SUCCESS'
     data['echarts_data'] = echarts_data
+    data['bootstrap_table_data'] = bootstrap_table_data
+
     return JsonResponse(data)
