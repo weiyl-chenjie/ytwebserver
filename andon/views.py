@@ -426,7 +426,8 @@ def get_echarts_data(request):
 
     outputs1 = list(History.objects.filter(input_datetime__range=(mps_object.start_time, mps_object.end_time)))
     for i in outputs1:
-        bootstrap_table_data.append({'actual_outputs': i.actual_outputs, 'input_datetime': str(i.input_datetime)})
+        # 使用.replace(microsecond=0)去掉时间字段的毫秒
+        bootstrap_table_data.append({'actual_outputs': i.actual_outputs, 'input_datetime': str(i.input_datetime.replace(microsecond=0))})
 
     data['status'] = 'SUCCESS'
     data['echarts_data'] = echarts_data

@@ -87,7 +87,7 @@
         <div class="{{ mps_object.id }} container float-left" style="display: none;">
             <div class="row" id="main{{ mps_object.id }}" style="width: 1000px;height:300px;" ></div>
             <div>
-                <table class="table table-striped table-bordered table-hover" id="table{{mps_object.id}}"></table>
+                <table class="table table-striped table-bordered table-hover" id="table"></table>
             </div>
         </div>
     {% endfor %}
@@ -213,8 +213,8 @@
                         var data1 = [
                             {actual_outputs:123,input_datetime:20200320}
                         ];
-                        $('#table' + element.id).bootstrapTable('destroy'); //动态加载表格之前，先销毁表格
-                        $('#table' + element.id).bootstrapTable({//表格初始化
+                        $('#table').bootstrapTable('destroy'); //动态加载表格之前，先销毁表格
+                        $('#table').bootstrapTable({//表格初始化
                             columns: tableColumns,  //表头
                             data:data['bootstrap_table_data'], //通过ajax返回的数据
                             width:300,  //表格宽度
