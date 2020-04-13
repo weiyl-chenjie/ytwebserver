@@ -391,7 +391,12 @@ def get_echarts_data(request):
     mps_id = request.POST['mps_id']
 
     mps_object = Mps.objects.get(id=mps_id)
-    x_axis = [x for x in range(mps_object.start_time.hour, mps_object.end_time.hour + 1)]  # 获取生产时间段的各个整点
+
+    time_range_start = mps_object.start_time.hour
+    time_range_end = mps_object.start_time.hour + int((mps_object.end_time - mps_object.start_time).seconds/3600)
+    time_range_end = 24 if time_range_end > 24 else time_range_end  # 如果time_range_end>25即mps_object.end_time.hour超过了24点)
+
+    x_axis = [x for x in range(time_range_start, time_range_end)]  # 获取生产时间段的各个整点
 
     # 存储各个整点的计划产量(向上取整）
     series_plan_data = [math.ceil((mps_object.plan_outputs / len(x_axis)) * (x_axis.index(x) + 1)) for x in x_axis]
@@ -407,6 +412,7 @@ def get_echarts_data(request):
     outputs = list(History.objects.filter(input_datetime__range=(mps_object.start_time, mps_object.end_time),
                                           mps_info_id=mps_object.id).values('input_datetime__hour').annotate(
         Max('actual_outputs')))
+    print(outputs)
     x_actual_axis = [x['input_datetime__hour'] for x in outputs]  # 获取outputs中的整点
 
     # 在计划生产的时间段内，每一个没有生产记录的小时，将其生产数量赋值为0
@@ -433,4 +439,5 @@ def get_echarts_data(request):
     data['echarts_data'] = echarts_data
     data['bootstrap_table_data'] = bootstrap_table_data
 
+    print(echarts_data)
     return JsonResponse(data)
