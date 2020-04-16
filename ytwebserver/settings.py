@@ -174,7 +174,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CKEDITOR_UPLOAD_PATH = 'upload/'
 CKEDITOR_CONFIGS = {
-    'default': {},
+    'default': {
+        'toolbar': 'full',  # 完整工具条
+        'height': 300,  # 编辑高度
+    },
     'comment_ckeditor': {
         'toolbar': 'custom',
         'toolbar_custom': [

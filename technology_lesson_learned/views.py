@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required  # 权限
 # Create your views here.
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import auth
 from django.contrib.auth.models import Group
@@ -60,7 +60,7 @@ def user_is_authenticated(request):
 
 
 def get_blog_list_common_data(request, articles_all_list):
-    paginator = Paginator(articles_all_list, settings.EACH_PAGE_NUMBER)  # 每2页进行分页
+    paginator = Paginator(articles_all_list, settings.EACH_PAGE_NUMBER)  # 每EACH_PAGE_NUMBER页进行分页
     page_num = request.GET.get('page', 1)  # 获取页面分页参数(GET请求)，获取当前是在哪个分页上
     page_of_articles = paginator.get_page(page_num)  # 获取该分页上包含的数据信息
     # print(page_of_articles)
@@ -117,7 +117,7 @@ def article_detail(request, article_pk):
 
 def articles_with_customer(request, customer):
     if user_is_authenticated(request):
-        articles_all_list = Article.objects.filter(project_info__customer_name=customer)
+        articles_all_list = Article.objects.filter(Q(project_info__customer_name=customer) | Q(project_info__customer_name='Common'))
         context = get_blog_list_common_data(request, articles_all_list)
         return render(request, 'technology_lesson_learned/articles_with_customer.html', context)
     else:

@@ -18,5 +18,5 @@ class ProjectNumberAdmin(admin.ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'project_info', 'issue', 'solution', 'created_date', 'last_updated_date', 'is_delete')
+    list_display = ('title', 'project_info', 'created_date', 'last_updated_date', 'is_delete')
     ordering = ('-created_date',)
