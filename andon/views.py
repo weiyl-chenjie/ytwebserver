@@ -430,10 +430,10 @@ def get_echarts_data(request):
                        'series_actual_data': series_actual_data, 'mark_line_data': mps_object.plan_outputs,
                     'project_info': project_info}
 
-    outputs1 = list(History.objects.filter(input_datetime__range=(mps_object.start_time, mps_object.end_time)))
+    outputs1 = list(History.objects.filter(input_datetime__range=(mps_object.start_time, mps_object.end_time), mps_info_id=mps_id))
     for i in outputs1:
         # 使用.replace(microsecond=0)去掉时间字段的毫秒
-        bootstrap_table_data.append({'actual_outputs': i.actual_outputs, 'input_datetime': str(i.input_datetime.replace(microsecond=0))})
+        bootstrap_table_data.append({'mps_id': i.mps_info_id, 'actual_outputs': i.actual_outputs, 'input_datetime': str(i.input_datetime.replace(microsecond=0))})
 
     data['status'] = 'SUCCESS'
     data['echarts_data'] = echarts_data

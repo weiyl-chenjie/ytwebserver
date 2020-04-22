@@ -117,8 +117,9 @@ def article_detail(request, article_pk):
 
 def articles_with_customer(request, customer):
     if user_is_authenticated(request):
-        articles_all_list = Article.objects.filter(Q(project_info__customer_name=customer) | Q(project_info__customer_name='Common'))
+        articles_all_list = Article.objects.filter(Q(project_info__customer_name__customer_name=customer) | Q(project_info__customer_name__customer_name='Common'))
         context = get_blog_list_common_data(request, articles_all_list)
+        context['customer'] = customer
         return render(request, 'technology_lesson_learned/articles_with_customer.html', context)
     else:
         return redirect('/technology_lesson_learned/login/')
