@@ -8,6 +8,7 @@
     我的网站
 {% endblock %}
 
+
 {% block articles_nav %}active{% endblock %}
 
 {% block content %}
@@ -56,7 +57,7 @@
                             </li>
                         {% endif %}
                         {% for page_num in page_range %}
-                            {% if page_num == page_of_blogs.number %}
+                            {% if page_num == page_of_articles.number %}
                                 <li class="page-item active"><i class="page-link">{{ page_num }}</i></li>
                             {% else %}
                                 {% if page_num == '...' %}
@@ -70,7 +71,7 @@
                         {% endfor %}
                         {% if page_of_articles.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ page_of_blogs.next_page_number }}">
+                                <a class="page-link" href="?page={{ page_of_articles.next_page_number }}">
                                 <span aria-hidden="true">&raquo;</span>
                                 <span class="sr-only">Next</span>
                                 </a>
