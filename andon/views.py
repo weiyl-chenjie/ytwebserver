@@ -394,9 +394,10 @@ def get_echarts_data(request):
 
     time_range_start = mps_object.start_time.hour
     time_range_end = mps_object.start_time.hour + int((mps_object.end_time - mps_object.start_time).seconds/3600)
-    time_range_end = 24 if time_range_end > 24 else time_range_end  # 如果time_range_end>25即mps_object.end_time.hour超过了24点)
 
     x_axis = [x for x in range(time_range_start, time_range_end)]  # 获取生产时间段的各个整点
+
+    x_axis = [x if x < 24 else x - 24 for x in x_axis]  # 对超过24点的进行处理
 
     # 存储各个整点的计划产量(向上取整）
     series_plan_data = [math.ceil((mps_object.plan_outputs / len(x_axis)) * (x_axis.index(x) + 1)) for x in x_axis]
@@ -419,7 +420,8 @@ def get_echarts_data(request):
     for i in x_axis:
         if i not in x_actual_axis:
             outputs.append({'input_datetime__hour': i, 'actual_outputs__max': 0})
-    outputs = sorted(outputs, key=lambda output: output['input_datetime__hour'])  # 按照outputs各个字典元素的key值排序(即按照整点排序)
+    # outputs = sorted(outputs, key=lambda output: output['input_datetime__hour'])  # 按照outputs各个字典元素的'input_datetime__hour'值排序(即按照整点排序)
+    outputs = sorted(outputs, key=lambda output: (output['actual_outputs__max'], output['input_datetime__hour']))  # 按照outputs各个字典元素的'actual_outputs__max'值排序(即按照产量排序)
 
     series_actual_data = [x['actual_outputs__max'] for x in outputs]  # 获取各个整点产量
 

@@ -117,7 +117,10 @@ def article_detail(request, article_pk):
 
 def articles_with_customer(request, customer):
     if user_is_authenticated(request):
-        articles_all_list = Article.objects.filter(Q(project_info__customer_name__customer_name=customer) | Q(project_info__customer_name__customer_name='Common'))
+        # # 包含Common客户和指定的customer的数据
+        # articles_all_list = Article.objects.filter(Q(project_info__customer_name__customer_name=customer) | Q(project_info__customer_name__customer_name='Common'))
+        # 查询指定的customer的数据
+        articles_all_list = Article.objects.filter(project_info__customer_name__customer_name=customer)
         context = get_blog_list_common_data(request, articles_all_list)
         context['customer'] = customer
         return render(request, 'technology_lesson_learned/articles_with_customer.html', context)
