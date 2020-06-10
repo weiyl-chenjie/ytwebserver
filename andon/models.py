@@ -11,19 +11,21 @@ from ckeditor_uploader.fields import RichTextUploadingField
 
 
 class Menu(models.Model):  # 项目、流水线信息
-    project = models.CharField(max_length=20, verbose_name="项目")
+    project = models.CharField(max_length=20, verbose_name="项目归属")
     production_line = models.CharField(max_length=20, verbose_name="流水线")
-    product = models.CharField(max_length=20, verbose_name="产品")
-    assembly_number = models.CharField(max_length=20, verbose_name="总成号")
+    # product = models.CharField(max_length=20, verbose_name="产品")
+    # assembly_number = models.CharField(max_length=20, verbose_name="总成号")
     ip = models.GenericIPAddressField(verbose_name="PLC的IP")
     is_stop = models.BooleanField(verbose_name='是否已停产', default=False)
 
     def __str__(self):
-        return self.project + self.production_line + self.product + '-' + self.assembly_number
+        # return self.project + self.production_line + self.product + '-' + self.assembly_number
+        return self.project + self.production_line
 
     class Meta:
         app_label = "andon"
-        unique_together = (("project", "production_line", "product"),)
+        # unique_together = (("project", "production_line", "product", "assembly_number"),)
+        unique_together = (("project", "production_line"),)
         verbose_name = "项目总览"
         verbose_name_plural = verbose_name
 
@@ -52,11 +54,11 @@ class Mps(models.Model):  # 生产计划
         return self.menu_info.ip
 
     # 零件总成号
-    def assembly_number(self):
-        return self.menu_info.assembly_number
+    # def assembly_number(self):
+    #     return self.menu_info.assembly_number
 
     plc_ip.short_description = "PLC的IP"
-    assembly_number.short_description = "总成号"
+    # assembly_number.short_description = "总成号"
 
     class Meta:
         app_label = "andon"
