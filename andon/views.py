@@ -414,16 +414,16 @@ def get_echarts_data(request):
                                           mps_info_id=mps_object.id).values('input_datetime__hour').annotate(
         Max('actual_outputs')))
     print(outputs)
-    x_actual_axis = [x['input_datetime__hour'] for x in outputs]  # 获取outputs中的整点
+    outputs_dic_temp = {x['input_datetime__hour']: x['actual_outputs__max'] for x in outputs}  # 字典的形式，获取outputs中整点对应的实际产量
 
-    # 在计划生产的时间段内，每一个没有生产记录的小时，将其生产数量赋值为0
-    for i in x_axis:
-        if i not in x_actual_axis:
-            outputs.append({'input_datetime__hour': i, 'actual_outputs__max': 0})
-    # outputs = sorted(outputs, key=lambda output: output['input_datetime__hour'])  # 按照outputs各个字典元素的'input_datetime__hour'值排序(即按照整点排序)
-    outputs = sorted(outputs, key=lambda output: (output['input_datetime__hour'], output['actual_outputs__max']))  # 按照outputs各个字典元素的'actual_outputs__max'值排序(即按照产量排序)
-    print(outputs)
-    series_actual_data = [x['actual_outputs__max'] for x in outputs]  # 获取各个整点产量
+    outputs_dic = {}
+    for i in x_axis:  # x_axis里的时间是按照递增排序排列好的，因此，outputs_dict中的数值是按照时间依次排序的
+        if i not in outputs_dic_temp.keys():
+            outputs_dic[x_axis.index(i)] = 0  # 在计划生产的时间段内，每一个没有生产记录的小时，将其生产数量赋值为0
+        else:
+            outputs_dic[x_axis.index(i)] = outputs_dic_temp[i]
+    print(outputs_dic)
+    series_actual_data = [x[1] for x in outputs_dic.items()]  # 获取各个整点产量
 
     # project_info = mps_object.menu_info.project + mps_object.menu_info.production_line + mps_object.menu_info.product + \
     #                mps_object.start_time.strftime('%Y-%m-%d')
