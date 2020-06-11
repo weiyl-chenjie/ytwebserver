@@ -40,10 +40,12 @@ class Mps(models.Model):  # 生产计划
     end_time = models.DateTimeField(verbose_name="结束生产时间")
 
     def __str__(self):
-        return self.menu_info.project + self.menu_info.production_line + self.menu_info.product + \
+        # return self.menu_info.project + self.menu_info.production_line + self.menu_info.product + \
+        #        " 计划产量" + str(self.plan_outputs) + " 生产人数" + str(self.workers) + \
+        #        " 开始时间" + str(self.start_time) + " 结束时间" + str(self.end_time)
+        return self.menu_info.project + self.menu_info.production_line + \
                " 计划产量" + str(self.plan_outputs) + " 生产人数" + str(self.workers) + \
                " 开始时间" + str(self.start_time) + " 结束时间" + str(self.end_time)
-
     def clean(self):
         if self.start_time > self.end_time:
             raise ValidationError({'start_time': _("开始时间不能晚于结束时间")})

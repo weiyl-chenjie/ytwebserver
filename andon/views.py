@@ -425,8 +425,9 @@ def get_echarts_data(request):
 
     series_actual_data = [x['actual_outputs__max'] for x in outputs]  # 获取各个整点产量
 
-    project_info = mps_object.menu_info.project + mps_object.menu_info.production_line + mps_object.menu_info.product + \
-                   mps_object.start_time.strftime('%Y-%m-%d')
+    # project_info = mps_object.menu_info.project + mps_object.menu_info.production_line + mps_object.menu_info.product + \
+    #                mps_object.start_time.strftime('%Y-%m-%d')
+    project_info = mps_object.menu_info.project + mps_object.menu_info.production_line + mps_object.start_time.strftime('%Y-%m-%d')
 
     echarts_data = {'x_axis': x_axis, 'series_plan_data': series_plan_data,
                        'series_actual_data': series_actual_data, 'mark_line_data': mps_object.plan_outputs,
