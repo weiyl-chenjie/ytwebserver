@@ -12,7 +12,7 @@ class MenuAdmin(admin.ModelAdmin):
 
 @admin.register(Mps)
 class MpsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'menu_info', 'plan_outputs', 'workers', 'start_time', 'end_time', 'plc_ip')
+    list_display = ('id', 'menu_info', 'plan_outputs', 'workers', 'start_time', 'end_time', 'plc_ip', 'remarks')
 
 
 @admin.register(History)

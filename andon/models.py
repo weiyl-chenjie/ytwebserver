@@ -38,6 +38,7 @@ class Mps(models.Model):  # 生产计划
     workers = models.PositiveIntegerField(verbose_name="生产人数")
     start_time = models.DateTimeField(verbose_name="开始生产时间")
     end_time = models.DateTimeField(verbose_name="结束生产时间")
+    remarks = models.CharField(max_length=20,null=True, blank=True, verbose_name="备注")
 
     def __str__(self):
         # return self.menu_info.project + self.menu_info.production_line + self.menu_info.product + \

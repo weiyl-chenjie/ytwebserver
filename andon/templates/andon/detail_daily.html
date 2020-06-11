@@ -26,6 +26,7 @@
                         <th scope="col">结束时间</th>
                         <th scope="col">计划产量</th>
                         <th scope="col">生产人数</th>
+                        <th scope="col">备注</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,6 +37,7 @@
                             <td>{{ mps_object.end_time }}</td>
                             <td>{{ mps_object.plan_outputs }}</td>
                             <td>{{ mps_object.workers }}</td>
+                            <td>{{ mps_object.remarks }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

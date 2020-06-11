@@ -20,6 +20,7 @@
                             <th scope="col">结束时间</th>
                             <th scope="col">计划产量</th>
                             <th scope="col">生产人数</th>
+                            <th scope="col">备注</th>
                         </tr>
                     </thead>
                     <tboday>
@@ -32,6 +33,7 @@
                                 <td>{{ record.end_time }}</td>
                                 <td>{{ record.plan_outputs }}</td>
                                 <td>{{ record.workers }}</td>
+                                <td>{{ record.remarks }}</td>
                             </tr>
                         {% endfor %}
                     </tboday>
