@@ -421,8 +421,8 @@ def get_echarts_data(request):
         if i not in x_actual_axis:
             outputs.append({'input_datetime__hour': i, 'actual_outputs__max': 0})
     # outputs = sorted(outputs, key=lambda output: output['input_datetime__hour'])  # 按照outputs各个字典元素的'input_datetime__hour'值排序(即按照整点排序)
-    outputs = sorted(outputs, key=lambda output: (output['actual_outputs__max'], output['input_datetime__hour']))  # 按照outputs各个字典元素的'actual_outputs__max'值排序(即按照产量排序)
-
+    outputs = sorted(outputs, key=lambda output: (output['input_datetime__hour'], output['actual_outputs__max']))  # 按照outputs各个字典元素的'actual_outputs__max'值排序(即按照产量排序)
+    print(outputs)
     series_actual_data = [x['actual_outputs__max'] for x in outputs]  # 获取各个整点产量
 
     # project_info = mps_object.menu_info.project + mps_object.menu_info.production_line + mps_object.menu_info.product + \
