@@ -393,8 +393,8 @@ def get_echarts_data(request):
     mps_object = Mps.objects.get(id=mps_id)
 
     time_range_start = mps_object.start_time.hour
-    time_range_end = mps_object.start_time.hour + int((mps_object.end_time - mps_object.start_time).seconds/3600)
-
+    time_range_end = mps_object.start_time.hour + math.ceil((mps_object.end_time - mps_object.start_time).total_seconds()/3600)
+    print(time_range_end)
     x_axis = [x for x in range(time_range_start, time_range_end)]  # 获取生产时间段的各个整点
 
     x_axis = [x if x < 24 else x - 24 for x in x_axis]  # 对超过24点的进行处理
@@ -417,11 +417,11 @@ def get_echarts_data(request):
     outputs_dic_temp = {x['input_datetime__hour']: x['actual_outputs__max'] for x in outputs}  # 字典的形式，获取outputs中整点对应的实际产量
 
     outputs_dic = {}
-    for i in x_axis:  # x_axis里的时间是按照递增排序排列好的，因此，outputs_dict中的数值是按照时间依次排序的
+    for i in x_axis:  # x_axis里的时间是按照日期递增排序排列好的，因此，outputs_dict中的数值是按照时间依次排序的
         if i not in outputs_dic_temp.keys():
-            outputs_dic[x_axis.index(i)] = 0  # 在计划生产的时间段内，每一个没有生产记录的小时，将其生产数量赋值为0
+            outputs_dic[i] = 0  # 在计划生产的时间段内，每一个没有生产记录的小时，将其生产数量赋值为0
         else:
-            outputs_dic[x_axis.index(i)] = outputs_dic_temp[i]
+            outputs_dic[i] = outputs_dic_temp[i]
     print(outputs_dic)
     series_actual_data = [x[1] for x in outputs_dic.items()]  # 获取各个整点产量
 
