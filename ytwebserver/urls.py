@@ -29,5 +29,6 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('andon/', include('andon.urls')),
     path('technology_lesson_learned/', include('technology_lesson_learned.urls')),
+    path('Painting/', include('Painting.urls')),
     url(r'^search/', include('haystack.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

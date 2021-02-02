@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # 自己的app
     'andon',
     'technology_lesson_learned',
+    'Painting',
 ]
 
 MIDDLEWARE = [

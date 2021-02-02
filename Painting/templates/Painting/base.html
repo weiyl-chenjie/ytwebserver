@@ -14,35 +14,20 @@
     <script type="text/javascript" src="{% static 'bootstrap4.3.1/jquery/jquery-3.4.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap-datepicker-1.9.0-dist/locales/bootstrap-datepicker.zh-CN.min.js' %}" charset="UTF-8"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-table/js/bootstrap-table.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-table/js/bootstrap-table-zh-CN.min.js' %}"></script>
     {% block header_style %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand btn-outline-info" href="{% url 'andon:index' %}" style="margin-right: 60px">
+        <a class="navbar-brand btn-outline-info" href="{% url 'Painting:index' %}" style="margin-right: 60px">
             <svg class="icon" aria-hidden="true" style="font-size: larger">
                 <use xlink:href="#icon-kanban"></use>
             </svg>
-            <span style="font-family: 华文隶书;">Andon系统生产看板</span>
+            <span style="font-family: 华文隶书;">喷漆生产数据看板</span>
         </a>
-        <a href="{% url 'andon:line_stop' %}" class="navbar-brand btn-outline-danger" style="margin-right: 60px">
-            <svg class="icon" aria-hidden="true" style="font-size: larger">
-                <use xlink:href="#icon--warning"></use>
-            </svg>
-            <span style="font-family: 华文隶书;">查看停线信息</span>
-        </a>
-        <a class="navbar-brand btn-outline-info" href="/admin/andon" style="margin-right: 60px">
-            <svg class="icon" aria-hidden="true" style="font-size: larger">
-                <use xlink:href="#icon-guanliyuan-yonghuchaxun"></use>
-            </svg>
-            <span style="font-family: 华文隶书;">Andon系统管理界面</span>
-        </a>
-        <a class="navbar-brand btn-outline-info" href="http://ywb31621-1/andon/">
-            <svg class="icon" aria-hidden="true" style="font-size: larger">
-                <use xlink:href="#icon-old-version"></use>
-            </svg>
-            <span style="font-family: 华文隶书;">Andon系统老版本</span>
-        </a>
+
         <li style="list-style-type: none" class="nav-item dropdown">
             {% if user.is_authenticated %}
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -66,8 +51,7 @@
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script type="text/javascript" src="{% static 'popper/js/popper.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap4.3.1/js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bootstrap-table/js/bootstrap-table.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bootstrap-table/js/bootstrap-table-zh-CN.min.js' %}"></script>
+
     <!--
     <script type="text/javascript" src="{% static 'bootstrap-table/js/bootstrap-table-locale-all.min.js' %}"></script>
     -->

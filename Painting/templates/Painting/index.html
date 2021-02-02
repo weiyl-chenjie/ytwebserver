@@ -1,0 +1,5 @@
+{% extends 'Painting/base.html' %}
+{% load static %}
+{% block content %}
+<a href="{% url 'Painting:painting_fpy_day_view' today %}" class="btn btn-success">喷漆合格率</a>
+{% endblock %}
