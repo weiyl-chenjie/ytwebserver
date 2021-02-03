@@ -73,6 +73,17 @@ def index(request):
 
 
 def painting_fpy_day_view(request, date):
+    # date分两种情况：
+    # 1、只查询某天数据，数据传送格式为 ‘yyyy-mm-dd’， 比如 ’2021-02-03‘
+    # 2、查询某一时间段的数据，数据传送格式为 ‘yyyy-mm-dd yyyy-mm-dd’，比如 '2021-02-03 2021-02-06'
+    print(date)
+    if len(date) == 10:  # 如果是第一种情况
+        date_start = date
+        date_end = date
+        production_date = date
+    else:  # 如果是第二种情况
+        date_start, date_end = date.split()
+        production_date = date_start + '至' + date_end
     content = {}
     echarts_elements = {}  # 存储返回前端给echarts的数据
     x_axis = []
@@ -86,26 +97,25 @@ def painting_fpy_day_view(request, date):
     # 获得url传过来的参数
     # menu_id = request.GET.get('menu')
     # date = datetime.datetime.strptime(request.GET.get('date'), '%Y-%m-%d')  # 字符串转化为日期格式
-    date = datetime.datetime.strptime(date, '%Y-%m-%d')  # 字符串转化为日期格式
+    date = datetime.datetime.strptime(date_end, '%Y-%m-%d')  # 字符串转化为日期格式
     prev_day = date - datetime.timedelta(days=1)  # 前一天
     next_day = date + datetime.timedelta(days=1)  # 后一天
 
 
     #  str(date)格式：2021-01-27 00:00:00
-    # 数据查询：今天8：00之后，至明天8：00之前，比如查询2021-01-31的数据，2021-01-31 8：00：00<查询的时间<2021-02-01 8：00：00
+    # 数据查询：按照Painting_Date查询（Painting_Date格式为yyyy-mm-dd(精确到天)
     sql_all = f"""SELECT DATEPART(year,input_time), DATEPART(month,input_time), DATEPART(day,input_time), DATEPART(hour,input_time), SUM(Quantity)
                  FROM Painting_Production_Records
-                 WHERE(Painting_Date = '{str(date).split(' ')[0]}')
+                 WHERE(Painting_Date >= '{date_start}') AND (Painting_Date <= '{date_end}')
                  GROUP BY DATEPART(year,input_time), DATEPART(month,input_time), DATEPART(day,input_time), DATEPART(hour,input_time)"""
     records_all = odbc_ms.select_query(sql_all)
 
     sql_qualified = f"""SELECT DATEPART(year,input_time), DATEPART(month,input_time), DATEPART(day,input_time), DATEPART(hour,input_time), SUM(Quantity)
                        FROM Painting_Production_Records
-                       WHERE(Painting_Date = '{str(date).split(' ')[0]}')
+                       WHERE(Painting_Date >= '{date_start}') AND (Painting_Date <= '{date_end}')
                        AND (Defect = '00')
                        GROUP BY DATEPART(year,input_time), DATEPART(month,input_time), DATEPART(day,input_time), DATEPART(hour,input_time)"""
     records_qualified = odbc_ms.select_query(sql_qualified)
-    print(records_qualified)
 
     for i in records_all:
         # 格式"yyyy-mm-dd hh"
@@ -114,17 +124,14 @@ def painting_fpy_day_view(request, date):
     for i in records_qualified:
         d_records_qualified[str(i[0]) + '-' + str(i[1]).zfill(2) + '-' + str(i[2]).zfill(2) + ' ' + str(i[3]).zfill(2)] = i[4]
 
-    print(d_records_all)
-
     for i in d_records_all.keys():
         if i not in d_records_qualified.keys():
             d_records_qualified[i] = 0
 
     d_records_all = sort_dict(**d_records_all)
     d_records_qualified = sort_dict(**d_records_qualified)
-    print(d_records_qualified)
 
-    fpy = {i: round(d_records_qualified[i] / d_records_all[i], 2) for i in d_records_all.keys() if d_records_all[i] != 0}
+    fpy = {i: round(d_records_qualified[i] / d_records_all[i], 4) for i in d_records_all.keys() if d_records_all[i] != 0}
     for key, value in fpy.items():
         x_axis.append(key)
         y_axis.append(value)
@@ -139,10 +146,14 @@ def painting_fpy_day_view(request, date):
     else:
         echarts_elements['day_fpy'] = round(sum_records_qualified / sum_records_all, 4)  # 日合格率
 
+    echarts_elements['hour_records_qualified'] = [str(y) for x, y in d_records_qualified.items()]  # 小时合格量
+    echarts_elements['hour_records_all'] = [str(y) for x, y in d_records_all.items()]  # 小时总产量
+
     if len(records_all) == 0:  # 如果没有生产数据, 则mps_empty置为真
         content['mps_empty'] = True
     else:
         content['mps_empty'] = False
+    content['production_date'] = production_date
     content['date'] = date
     content['prev_day'] = prev_day
     content['next_day'] = next_day

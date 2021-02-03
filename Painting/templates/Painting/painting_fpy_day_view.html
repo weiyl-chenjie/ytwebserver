@@ -1,35 +1,74 @@
 {% extends 'Painting/base.html' %}
 {% load static %}
 {% block content %}
-    <h1>
+    <div style="margin-top: 50px;margin-bottom: 50px">
+        <h1>
+            <div class="form-inline">
+                <svg class="icon" aria-hidden="true" style="font-size: x-large">
+                    <use xlink:href="#icon-riqi-"></use>
+                </svg>
+                <label style="font-family: 华文楷体;font-size: x-large">选择查询区间：</label>
+                <input type="text" id="datepicker_start" class="form-control" placeholder="起始时间">
+                <label style="font-family: 华文楷体;font-size: x-large">至</label>
+                <input type="text" id="datepicker_end" class="form-control" placeholder="截至时间">
+                <button type="button" class="btn btn-primary" id="button_submit">确定</button>
+            </div>
+            <span id="datepicker_error" class="text-danger"></span>
+        </h1>
+    </div>
+    <div><h1>
         {% if not mps_empty %}
-            {{ date|date:'Y-m-d' }}喷漆生产合格率:
+            {{ production_date }}喷漆生产合格率:
         {% else %}
-            {{ date|date:'Y-m-d' }}<span style="color: #FF0000">无</span>生产计划
-        {% endif %}
-        &emsp;
+            {{ production_date }}<span style="color: #FF0000">无</span>生产计划
+        {% endif %}&emsp;
         <a href="{% url 'Painting:painting_fpy_day_view' prev_day|date:'Y-m-d' %}" class="btn btn-outline-info">前一天</a>
         <a href="{% url 'Painting:painting_fpy_day_view' next_day|date:'Y-m-d' %}" class="btn btn-outline-info">后一天</a>
-        <a href="{% url 'Painting:monthly' date|date:'Y-m' %}" class="btn btn-outline-info">按月查看</a>
-
-    </h1>
-    <div>
-        <h1>总产量:{{ sum_records_all }}</h1>
-        <h1>合格量:{{ sum_records_qualified }}</h1>
-    </div>
+        <a href="{% url 'Painting:monthly' date|date:'Y-m' %}" class="btn btn-outline-info">月视图</a>
+    </h1></div>
     <div class="container float-left">
-        <div class="row" id="echarts" style="width: 1000px;height:300px;" ></div>
+        <div class="row" id="echarts" style="width: 1200px;height:300px;" ></div>
         <div>
             <table class="table table-striped table-bordered table-hover" id="table"></table>
         </div>
     </div>
     <script>
+        // 选择月份控件参数配置
+        $('#datepicker_start, #datepicker_end').datepicker({
+            language: "zh-CN",          //选择语言
+            calendarWeeks: true,        //显示周数
+            autoclose: true,            //选择完日期后自动关闭
+            todayHighlight: true,       //今日高亮显示
+            weekStart: 0,               //周日为一周的第一天
+            minViewMode: 0,             //最小视图单位：0/day, 1/month, 2/year, 3/10年， 4/世纪
+            format: "yyyy-mm-dd",       //日期格式
+            clearBtn: true,             //显示清除按钮
+            orientation: "bottom auto" //控件位置：底部自动
+        });
+        // 点击确定按钮事件
+        $('#button_submit').click(function () {
+            let patter_date = /^\d{4}-\d{2}-\d{2}$/
+            let date_start = $('#datepicker_start').val();
+            let date_end = $('#datepicker_end').val();
+            let date = date_start + ' ' + date_end
+            // console.log(date)
+            let result_start = patter_date.test(date_start)
+            let result_end = patter_date.test(date_end)
+            if(result_start && result_end){
+                window.location.href =  "/Painting/painting_fpy_day_view/" + date;
+            }
+            else{
+                $("#datepicker_error").text('日期格式错误');
+            }
+        })
         // json数据解包
         let data = {{ echarts_elements|safe }};
-        x_axis = data.x_axis;
-        y_axis = data.y_axis;
-        day_fpy = data.day_fpy;
-        console.log(y_axis);
+        let x_axis = data.x_axis;
+        let y_axis = data.y_axis;
+        let day_fpy = data.day_fpy;
+        let hour_records_qualified = data.hour_records_qualified;
+        let hour_records_all = data.hour_records_all;
+        // console.log(y_axis);
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('echarts'));
         // 指定图表的配置项和数据
@@ -43,7 +82,7 @@
             legend: {
                 x:'100px',
                 y:'30px',
-                data:['小时合格率']
+                data:['小时合格率', '小时合格量', '小时总产量']
             },
             grid: {
                 left: '3%',
@@ -83,7 +122,12 @@
             },
             yAxis : [
                 {
-                    type : 'value'
+                    type : 'value',
+                    min: 0,
+                    max: 1
+                },
+                {
+                    type: 'value'
                 }
             ],
             series : [
@@ -101,17 +145,30 @@
                         },
                         lineStyle: {
                             width: 3,
-                            color: '#EFD914',
+                            color: '#ef1414',
                             type: 'solid'
                         },
+                        yAxisIndex: 0, //使用的 y 轴的 index，在单个图表实例中存在多个 y轴的时候有用。
                         data: [
                             {
-                                name: '日合格率:' + day_fpy,
+                                name: '总合格率:' + day_fpy + '\n总合格量:' + {{ sum_records_qualified }} + '\n总生产量:' + {{ sum_records_all }},
                                 yAxis: day_fpy
                             }
                         ]
                     }
                 },
+                {
+                    name: '小时合格量',
+                    yAxisIndex: 1, ////使用的 y 轴的 index，在单个图表实例中存在多个 y轴的时候有用。
+                    data: hour_records_qualified,
+                    type: 'line'
+                },
+                {
+                    name: '小时总产量',
+                    yAxisIndex: 1, ////使用的 y 轴的 index，在单个图表实例中存在多个 y轴的时候有用。
+                    data: hour_records_all,
+                    type: 'line'
+                }
             ]
         };
         // 使用刚指定的配置项和数据显示图表。
