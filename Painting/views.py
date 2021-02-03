@@ -137,7 +137,7 @@ def painting_fpy_day_view(request, date):
     if sum_records_all == 0:  # 如果没有生产记录
         echarts_elements['day_fpy'] = 0
     else:
-        echarts_elements['day_fpy'] = round(sum_records_qualified / sum_records_all, 2)  # 日合格率
+        echarts_elements['day_fpy'] = round(sum_records_qualified / sum_records_all, 4)  # 日合格率
 
     if len(records_all) == 0:  # 如果没有生产数据, 则mps_empty置为真
         content['mps_empty'] = True
@@ -173,6 +173,8 @@ def monthly(request, date):
                          WHERE (CONVERT(varchar(7), Painting_Date, 120) = '{str(date)[:7]}')
                          GROUP BY CONVERT(varchar(10), Painting_Date, 120)"""
     rows = odbc_ms.select_query(sql_groupBy_day)
+    print(sql_groupBy_day)
+    print(rows)
     # 获得该月哪些天有生产计划（按天存储）, 同理获取该月哪些天有停线记录（按天存储）
     # 借鉴的andon系统，这里不需要停线记录，所以停线记录为空
     mps_date = sorted([x[0].day for x in rows])
